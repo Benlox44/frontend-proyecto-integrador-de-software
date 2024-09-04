@@ -6,12 +6,41 @@
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-  
+
 .courseImage {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    width: 100px;
+    height: 100px;
+}
+
+.courseInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.buyers {
+    display: flex;
+    align-items: center;
+}
+
+.personIcon {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.rating {
+    display: flex;
+}
+
+.star {
+    color: gold;
+    font-size: 20px;
+}
+
+.star.empty {
+    color: lightgray;
 }
   
 .price {
@@ -35,5 +64,4 @@ button {
   
 .secondaryButton {
     background-color: #2ecc71;
-    color: white;
 }
