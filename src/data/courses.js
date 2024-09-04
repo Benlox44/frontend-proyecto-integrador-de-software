@@ -1,4 +1,3 @@
-
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 const courses = [
@@ -41,7 +40,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Conocimientos básicos de UX/UI y manejo de herramientas de diseño.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://www.youtube.com/embed/zHAa-m16NGk"
+        videoUrl: "https://www.youtube.com/embed/zHAa-m16NGk",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     },
     { 
         id: 3, 
@@ -60,7 +61,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Ninguno, aunque se recomienda tener una idea básica del entorno digital.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://example.com/video/digital-marketing"
+        videoUrl: "https://www.youtube.com/embed/bixR-KIJKYM",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     },
     { 
         id: 4, 
@@ -79,7 +82,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Cámara DSLR o mirrorless (preferiblemente), y un software de edición de fotos.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://example.com/video/professional-photography"
+        videoUrl: "https://www.youtube.com/embed/xQfGY0zseag",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     },
     { 
         id: 5, 
@@ -98,7 +103,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Ganas de aprender y una cocina equipada para realizar las técnicas enseñadas.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://example.com/video/gourmet-cooking"
+        videoUrl: "https://example.com/video/gourmet-cooking",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     },
     { 
         id: 6, 
@@ -117,7 +124,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Conocimiento básico de programación, idealmente en Python.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://example.com/video/python-data-science"
+        videoUrl: "https://example.com/video/python-data-science",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     },
     { 
         id: 7, 
@@ -136,7 +145,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Ninguno, pero se recomienda tener una tableta gráfica.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://example.com/video/digital-illustration"
+        videoUrl: "https://example.com/video/digital-illustration",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     },
     { 
         id: 8, 
@@ -155,7 +166,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Conocimiento básico de SEO.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://example.com/video/advanced-seo"
+        videoUrl: "https://example.com/video/advanced-seo",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     },
     { 
         id: 9, 
@@ -174,7 +187,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Conocimientos básicos de programación, preferiblemente en JavaScript o un lenguaje orientado a objetos.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://example.com/video/mobile-app-development"
+        videoUrl: "https://example.com/video/mobile-app-development",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     },
     { 
         id: 10, 
@@ -193,7 +208,9 @@ const courses = [
             "<strong>Requisitos previos:</strong><br>" +
             "Acceso a un software de edición de video profesional.",
         image: "/placeholder.svg?height=200&width=300",
-        videoUrl: "https://example.com/video/professional-video-editing"
+        videoUrl: "https://example.com/video/professional-video-editing",
+        buyers: getRandomInt(50, 500),
+        rating: getRandomInt(3, 5)
     }
 ];
 
