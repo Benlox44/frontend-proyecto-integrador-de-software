@@ -12,6 +12,7 @@ const Header = ({ currentPage, setCurrentPage, cart, user, logout }) => (
       {user ? (
         <>
           <span>{user.email}</span>
+          <button onClick={() => setCurrentPage('editProfile')} className="primaryButton">Editar Perfil</button>
           <button onClick={logout} className="logoutButton">Cerrar Sesión</button>
         </>
       ) : (

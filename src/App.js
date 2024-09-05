@@ -5,6 +5,7 @@ import Cart from './components/Cart';
 import CourseDetails from './components/CourseDetails';
 import Login from './components/Login';
 import Register from './components/Register';
+import EditProfile from './components/EditProfile';
 import coursesData from './data/courses';
 import './styles/App.css';
 
@@ -83,6 +84,13 @@ function App() {
         {currentPage === 'register' && (
           <Register 
             setUser={setUser}  // Pasar la función setUser
+            setCurrentPage={setCurrentPage} 
+          />
+        )}
+        {currentPage === 'editProfile' && user && (
+          <EditProfile 
+            user={user} 
+            setUser={setUser} 
             setCurrentPage={setCurrentPage} 
           />
         )}
