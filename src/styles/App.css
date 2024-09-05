@@ -133,3 +133,14 @@ body {
   width: 100%;
   height: 100%;
 }
+
+.registerLink,
+.loginLink {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.registerLink button,
+.loginLink button {
+  margin-left: 10px;
+}
