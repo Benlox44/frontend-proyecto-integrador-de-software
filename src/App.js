@@ -23,16 +23,6 @@ function App() {
     setCart(cart.filter(item => item.id !== courseId));
   };
 
-  const login = (email, password) => {
-    setUser({ email, name: "Usuario Ejemplo" });
-    setCurrentPage('home');
-  };
-
-  const register = (name, email, password) => {
-    setUser({ email, name });
-    setCurrentPage('home');
-  };
-
   const logout = () => {
     setUser(null);
     setCurrentPage('home');
@@ -86,13 +76,13 @@ function App() {
         )}
         {currentPage === 'login' && (
           <Login 
-            login={login} 
+            setUser={setUser}  // Pasar la función setUser
             setCurrentPage={setCurrentPage} 
           />
         )}
         {currentPage === 'register' && (
           <Register 
-            register={register} 
+            setUser={setUser}  // Pasar la función setUser
             setCurrentPage={setCurrentPage} 
           />
         )}

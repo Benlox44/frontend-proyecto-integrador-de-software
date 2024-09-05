@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Register = ({ setCurrentPage }) => {
+const Register = ({ setCurrentPage, setUser }) => {
   const register = async (name, email, password) => {
     try {
       const response = await fetch('http://localhost:3001/register', {
@@ -12,7 +12,9 @@ const Register = ({ setCurrentPage }) => {
       });
 
       if (response.ok) {
-        alert('Usuario registrado');
+        const user = await response.json();
+        setUser(user);
+        setCurrentPage('home');
       } else {
         alert('Error al registrar usuario');
       }
@@ -25,7 +27,15 @@ const Register = ({ setCurrentPage }) => {
   return (
     <div className="courseCard">
       <h2 className="title">Registrarse</h2>
-      <form onSubmit={(e) => { e.preventDefault(); register(e.target.name.value, e.target.email.value, e.target.password.value); }} className="form">
+      <form onSubmit={(e) => { 
+        e.preventDefault(); 
+        const { name, email, password, confirmPassword } = e.target;
+        if (password.value !== confirmPassword.value) {
+          alert('Las contraseñas no coinciden');
+          return;
+        }
+        register(name.value, email.value, password.value); 
+      }} className="form">
         <input type="text" name="name" placeholder="Nombre" required className="input" />
         <input type="email" name="email" placeholder="Email" required className="input" />
         <input type="password" name="password" placeholder="Contraseña" required className="input" />

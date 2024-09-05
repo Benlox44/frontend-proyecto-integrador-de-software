@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Login = ({ setCurrentPage }) => {
+const Login = ({ setCurrentPage, setUser }) => {
   const login = async (email, password) => {
     try {
       const response = await fetch('http://localhost:3001/login', {
@@ -12,8 +12,9 @@ const Login = ({ setCurrentPage }) => {
       });
 
       if (response.ok) {
-        alert('Inicio de sesión exitoso');
-        // Aquí puedes redirigir al usuario a otra página o realizar alguna acción adicional
+        const user = await response.json();
+        setUser(user);
+        setCurrentPage('home');
       } else {
         alert('Credenciales incorrectas');
       }
