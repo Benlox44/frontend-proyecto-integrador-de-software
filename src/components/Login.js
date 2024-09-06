@@ -16,11 +16,12 @@ const Login = ({ setCurrentPage, setUser }) => {
         setUser(user);
         setCurrentPage('home');
       } else {
-        alert('Credenciales incorrectas');
+        const errorData = await response.json();
+        alert(errorData.message);
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al iniciar sesión');
+      alert('Error al intentar iniciar sesión. Intenta nuevamente más tarde.');
     }
   };
 

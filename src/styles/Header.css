@@ -36,3 +36,10 @@ button {
     background-color: #e74c3c;
     color: white;
 }
+
+.username {
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
