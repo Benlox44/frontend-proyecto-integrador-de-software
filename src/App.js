@@ -7,6 +7,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import EditProfile from './components/EditProfile';
 import coursesData from './data/courses';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import CompraFallida from './components/CompraFallida';  // Importa el componente de Compra Fallida
 import './styles/App.css';
 
 function App() {
@@ -49,60 +51,78 @@ function App() {
   }, [filter]);
 
   return (
-    <div className="app">
-      <Header 
-        currentPage={currentPage} 
-        setCurrentPage={setCurrentPage} 
-        cart={cart} 
-        user={user} 
-        logout={logout} 
-      />
-      <main>
-        {currentPage === 'home' && (
-          <Home 
-            courses={coursesData} 
-            addToCart={addToCart} 
-            setSelectedCourse={setSelectedCourse} 
-            setCurrentPage={setCurrentPage} 
-            filter={filter} 
-            setFilter={setFilter} 
-            filteredCourses={filteredCourses} 
-          />
-        )}
-        {currentPage === 'cart' && (
-          <Cart 
-            cart={cart} 
-            removeFromCart={removeFromCart} 
-          />
-        )}
-        {currentPage === 'login' && (
-          <Login 
-            setUser={setUser}  // Pasar la función setUser
-            setCurrentPage={setCurrentPage} 
-          />
-        )}
-        {currentPage === 'register' && (
-          <Register 
-            setUser={setUser}  // Pasar la función setUser
-            setCurrentPage={setCurrentPage} 
-          />
-        )}
-        {currentPage === 'editProfile' && user && (
-          <EditProfile 
-            user={user} 
-            setUser={setUser} 
-            setCurrentPage={setCurrentPage} 
-          />
-        )}
-        {currentPage === 'details' && selectedCourse && (
-          <CourseDetails 
-            selectedCourse={selectedCourse} 
-            addToCart={addToCart} 
-            setCurrentPage={setCurrentPage} 
-          />
-        )}
-      </main>
-    </div>
+    <Router>
+      <div className="app">
+        <Header 
+          currentPage={currentPage} 
+          setCurrentPage={setCurrentPage} 
+          cart={cart} 
+          user={user} 
+          logout={logout} 
+        />
+        <main>
+          <Routes>
+            {/* Rutas usando React Router */}
+            <Route path="/compra-fallida" element={<CompraFallida />} />
+            <Route path="/compra-exitosa" element={
+              <div>
+                <h1>Compra Exitosa</h1>
+                <p>¡Gracias por tu compra!</p>
+              </div>
+            } />
+
+            {/* Vistas controladas por el estado */}
+            <Route path="/" element={
+              <>
+                {currentPage === 'home' && (
+                  <Home 
+                    courses={coursesData} 
+                    addToCart={addToCart} 
+                    setSelectedCourse={setSelectedCourse} 
+                    setCurrentPage={setCurrentPage} 
+                    filter={filter} 
+                    setFilter={setFilter} 
+                    filteredCourses={filteredCourses} 
+                  />
+                )}
+                {currentPage === 'cart' && (
+                  <Cart 
+                    cart={cart} 
+                    removeFromCart={removeFromCart} 
+                  />
+                )}
+                {currentPage === 'login' && (
+                  <Login 
+                    setUser={setUser}  
+                    setCurrentPage={setCurrentPage} 
+                  />
+                )}
+                {currentPage === 'register' && (
+                  <Register 
+                    setUser={setUser}  
+                    setCurrentPage={setCurrentPage} 
+                  />
+                )}
+                {currentPage === 'editProfile' && user && (
+                  <EditProfile 
+                    user={user} 
+                    setUser={setUser} 
+                    setCurrentPage={setCurrentPage} 
+                  />
+                )}
+                {currentPage === 'details' && selectedCourse && (
+                  <CourseDetails 
+                    selectedCourse={selectedCourse} 
+                    addToCart={addToCart} 
+                    setCurrentPage={setCurrentPage} 
+                  />
+                )}
+              </>
+            } />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
