@@ -1,6 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Register = ({ setCurrentPage, setUser }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   const register = async (name, email, password) => {
     try {
       const response = await fetch('http://localhost:3001/register', {
@@ -16,30 +28,70 @@ const Register = ({ setCurrentPage, setUser }) => {
         setUser(user);
         setCurrentPage('home');
       } else {
-        alert('Error al registrar usuario');
+        const errorData = await response.json();
+        setError(errorData.message);  // Mostrar el mensaje del backend, como "El correo ya está en uso"
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al registrar usuario');
+      setError('Error al registrar usuario. Intenta nuevamente más tarde.');
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { name, email, password, confirmPassword } = formData;
+
+    // Validación de contraseñas
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      return;
+    }
+
+    // Llamada al método de registro
+    register(name, email, password);
   };
 
   return (
     <div className="courseCard">
       <h2 className="title">Registrarse</h2>
-      <form onSubmit={(e) => { 
-        e.preventDefault(); 
-        const { name, email, password, confirmPassword } = e.target;
-        if (password.value !== confirmPassword.value) {
-          alert('Las contraseñas no coinciden');
-          return;
-        }
-        register(name.value, email.value, password.value); 
-      }} className="form">
-        <input type="text" name="name" placeholder="Nombre" required className="input" />
-        <input type="email" name="email" placeholder="Email" required className="input" />
-        <input type="password" name="password" placeholder="Contraseña" required className="input" />
-        <input type="password" name="confirmPassword" placeholder="Confirmar Contraseña" required className="input" />
+      {error && <p className="errorMessage">{error}</p>} {/* Mostrar mensajes de error */}
+      <form onSubmit={handleSubmit} className="form">
+        <input 
+          type="text" 
+          name="name" 
+          placeholder="Nombre" 
+          value={formData.name}
+          onChange={handleChange} 
+          required 
+          className="input" 
+        />
+        <input 
+          type="email" 
+          name="email" 
+          placeholder="Email" 
+          value={formData.email}
+          onChange={handleChange} 
+          required 
+          className="input" 
+        />
+        <input 
+          type="password" 
+          name="password" 
+          placeholder="Contraseña" 
+          value={formData.password}
+          onChange={handleChange} 
+          required 
+          className="input" 
+        />
+        <input 
+          type="password" 
+          name="confirmPassword" 
+          placeholder="Confirmar Contraseña" 
+          value={formData.confirmPassword}
+          onChange={handleChange} 
+          required 
+          className="input" 
+        />
         <button type="submit" className="primaryButton">Registrarse</button>
       </form>
       <p className="loginLink">
