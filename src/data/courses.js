@@ -4,7 +4,7 @@ const courses = [
     { 
         id: 1, 
         title: "Introducción a React", 
-        price: 99.99, 
+        price: 99, 
         category: "Programación", 
         description: 
             "Este curso está diseñado para desarrolladores que desean dominar React, la biblioteca de JavaScript más popular para la creación de interfaces de usuario dinámicas.<br><br>" +
