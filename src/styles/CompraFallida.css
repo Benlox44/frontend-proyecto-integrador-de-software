@@ -1,13 +1,31 @@
 .compraFallidaContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f8d7da;
-  }
-  
-  .compraFallidaText {
-    color: #721c24;
-    font-size: 48px;
-    font-weight: bold;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8d7da;
+}
+
+.compraFallidaText {
+  color: #721c24;
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.compraFallidaDetalle {
+  color: #721c24;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.volverCursosButton {
+  background-color: #007bff;
+  color: #1155e7;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+}

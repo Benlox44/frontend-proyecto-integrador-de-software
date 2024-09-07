@@ -6,9 +6,10 @@ import CourseDetails from './components/CourseDetails';
 import Login from './components/Login';
 import Register from './components/Register';
 import EditProfile from './components/EditProfile';
+import CompraFallida from './components/CompraFallida';  // Importa CompraFallida
+import CompraExitosa from './components/CompraExitosa';  // Importa CompraExitosa
 import coursesData from './data/courses';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import CompraFallida from './components/CompraFallida';  // Importa el componente de Compra Fallida
 import './styles/App.css';
 
 function App() {
@@ -64,12 +65,7 @@ function App() {
           <Routes>
             {/* Rutas usando React Router */}
             <Route path="/compra-fallida" element={<CompraFallida />} />
-            <Route path="/compra-exitosa" element={
-              <div>
-                <h1>Compra Exitosa</h1>
-                <p>¡Gracias por tu compra!</p>
-              </div>
-            } />
+            <Route path="/compra-exitosa" element={<CompraExitosa />} />
 
             {/* Vistas controladas por el estado */}
             <Route path="/" element={
