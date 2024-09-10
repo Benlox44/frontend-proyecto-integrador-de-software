@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Header from './components/Header';
 import Home from './components/Home';
 import Cart from './components/Cart';
@@ -6,9 +6,8 @@ import CourseDetails from './components/CourseDetails';
 import Login from './components/Login';
 import Register from './components/Register';
 import EditProfile from './components/EditProfile';
-import CompraFallida from './components/CompraFallida';  // Importa CompraFallida
-import CompraExitosa from './components/CompraExitosa';  // Importa CompraExitosa
-import coursesData from './data/courses';
+import PurchaseSuccess from './components/PurchaseSuccess';
+import PurchaseFailure from './components/PurchaseFailure';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './styles/App.css';
 
@@ -18,13 +17,85 @@ function App() {
   const [user, setUser] = useState(null);
   const [filter, setFilter] = useState({ category: 'all', sort: 'default' });
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingCart, setLoadingCart] = useState(false);
 
-  const addToCart = (course) => {
-    setCart([...cart, course]);
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('http://localhost:3002/courses');
+        const data = await response.json();
+        setCourses(data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  const fetchCart = async (userId) => {
+    setLoadingCart(true);
+    try {
+      const cartResponse = await fetch(`http://localhost:3001/cart/${userId}`);
+      if (!cartResponse.ok) {
+        throw new Error("Error fetching cart from server");
+      }
+      const cartData = await cartResponse.json();
+      setCart(cartData.cart);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      alert("Hubo un problema al cargar el carrito. Intenta nuevamente más tarde.");
+    } finally {
+      setLoadingCart(false);
+    }
   };
 
-  const removeFromCart = (courseId) => {
-    setCart(cart.filter(item => item.id !== courseId));
+  const addToCart = async (course) => {
+    if (!user) {
+      setCurrentPage('login');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3001/add-to-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.id, courseId: course.id }),
+      });
+
+      if (response.ok) {
+        fetchCart(user.id);
+      }
+    } catch (error) {
+      alert('Error al añadir al carrito.');
+    }
+  };
+
+  const removeFromCart = async (courseId) => {
+    if (!user) {
+      setCurrentPage('login');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3001/remove-from-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.id, courseId }),
+      });
+
+      if (response.ok) {
+        fetchCart(user.id);
+      }
+    } catch (error) {
+      alert('Error al eliminar del carrito.');
+    }
   };
 
   const logout = () => {
@@ -33,12 +104,10 @@ function App() {
   };
 
   const filteredCourses = useMemo(() => {
-    let result = coursesData;
-
+    let result = courses;
     if (filter.category !== 'all') {
       result = result.filter(course => course.category === filter.category);
     }
-
     switch (filter.sort) {
       case 'price-asc':
         return result.sort((a, b) => a.price - b.price);
@@ -49,7 +118,11 @@ function App() {
       default:
         return result;
     }
-  }, [filter]);
+  }, [filter, courses]);
+
+  if (loading) {
+    return <div>Cargando cursos...</div>;
+  }
 
   return (
     <Router>
@@ -63,16 +136,13 @@ function App() {
         />
         <main>
           <Routes>
-            {/* Rutas usando React Router */}
-            <Route path="/compra-fallida" element={<CompraFallida />} />
-            <Route path="/compra-exitosa" element={<CompraExitosa />} />
-
-            {/* Vistas controladas por el estado */}
+          <Route path="/purchase-failure" element={<PurchaseFailure />} />
+          <Route path="/purchase-success" element={<PurchaseSuccess />} />
             <Route path="/" element={
               <>
                 {currentPage === 'home' && (
                   <Home 
-                    courses={coursesData} 
+                    courses={courses} 
                     addToCart={addToCart} 
                     setSelectedCourse={setSelectedCourse} 
                     setCurrentPage={setCurrentPage} 
@@ -85,12 +155,14 @@ function App() {
                   <Cart 
                     cart={cart} 
                     removeFromCart={removeFromCart} 
+                    loadingCart={loadingCart} 
                   />
                 )}
                 {currentPage === 'login' && (
                   <Login 
                     setUser={setUser}  
                     setCurrentPage={setCurrentPage} 
+                    fetchCart={fetchCart} // Llama a fetchCart después de iniciar sesión
                   />
                 )}
                 {currentPage === 'register' && (

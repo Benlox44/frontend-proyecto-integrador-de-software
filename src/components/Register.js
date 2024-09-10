@@ -29,10 +29,9 @@ const Register = ({ setCurrentPage, setUser }) => {
         setCurrentPage('home');
       } else {
         const errorData = await response.json();
-        setError(errorData.message);  // Mostrar el mensaje del backend, como "El correo ya está en uso"
+        setError(errorData.message);
       }
     } catch (error) {
-      console.error('Error:', error);
       setError('Error al registrar usuario. Intenta nuevamente más tarde.');
     }
   };
@@ -40,21 +39,17 @@ const Register = ({ setCurrentPage, setUser }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { name, email, password, confirmPassword } = formData;
-
-    // Validación de contraseñas
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
     }
-
-    // Llamada al método de registro
     register(name, email, password);
   };
 
   return (
     <div className="courseCard">
       <h2 className="title">Registrarse</h2>
-      {error && <p className="errorMessage">{error}</p>} {/* Mostrar mensajes de error */}
+      {error && <p className="errorMessage">{error}</p>}
       <form onSubmit={handleSubmit} className="form">
         <input 
           type="text" 

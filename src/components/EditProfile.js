@@ -37,7 +37,6 @@ const EditProfile = ({ user, setUser }) => {
         setError(errorData.message);
       }
     } catch (error) {
-      console.error('Error al actualizar perfil:', error);
       setError('Error al actualizar perfil. Intenta nuevamente.');
     }
   };

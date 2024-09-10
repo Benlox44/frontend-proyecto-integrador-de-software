@@ -20,7 +20,6 @@ const Login = ({ setCurrentPage, setUser }) => {
         alert(errorData.message);
       }
     } catch (error) {
-      console.error('Error:', error);
       alert('Error al intentar iniciar sesión. Intenta nuevamente más tarde.');
     }
   };

@@ -1,24 +1,28 @@
 import React from 'react';
 
-const Cart = ({ cart, removeFromCart }) => {
+const Cart = ({ cart, removeFromCart, loadingCart }) => {
+  if (loadingCart) {
+    return <div>Cargando carrito...</div>;
+  }
+
+  console.log("Cart items:", cart);
 
   const handleCheckout = async () => {
     try {
       const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
 
-      const response = await fetch("http://localhost:3005/api/webpay/init", {  // Asegúrate de que la URL del backend esté correcta
+      const response = await fetch("http://localhost:3005/api/webpay/init", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           totalAmount,
-          courses: cart, // Enviar la lista de cursos en el carrito
+          courses: cart,
         }),
       });
 
       const data = await response.json();
-
       if (data.url && data.token) {
         window.location.href = `${data.url}?token_ws=${data.token}`;
       }
@@ -40,10 +44,7 @@ const Cart = ({ cart, removeFromCart }) => {
       <p className="total">
         Total: ${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
       </p>
-      {/* Aquí está el botón que dispara la función de checkout */}
-      <button onClick={handleCheckout} className="checkoutButton">
-        Continuar con la compra
-      </button>
+      <button onClick={handleCheckout} className="checkoutButton">Continuar con la compra</button>
     </div>
   );
 };
