@@ -1,9 +1,9 @@
 import React from 'react';
-import '../styles/CompraExitosa.css'; // Make sure to create this CSS file
+import '../styles/PurchaseSuccess.css';
 
 const CompraExitosa = () => {
     const volverACursos = () => {
-        window.location.href = 'http://localhost:3000'; // Change the URL according to your configuration
+        window.location.href = 'http://localhost:3000';
     };
 
     return (

@@ -1,9 +1,9 @@
 import React from 'react';
-import '../styles/CompraFallida.css'; // Asegúrate de crear este archivo CSS
+import '../styles/PurchaseFailure.css';
 
 const CompraFallida = () => {
   const volverACursos = () => {
-    window.location.href = 'http://localhost:3000'; // Cambia la URL según tu configuración
+    window.location.href = 'http://localhost:3000';
   };
 
   return (
