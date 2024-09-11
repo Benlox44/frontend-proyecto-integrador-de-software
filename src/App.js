@@ -54,13 +54,9 @@ function App() {
 
   const addToCart = async (course) => {
     if (!user) {
-      console.log("Usuario no autenticado, redirigiendo a la página de inicio de sesión.");
       setCurrentPage('login');
       return;
     }
-  
-    console.log(`Añadiendo curso al carrito: ${course.title} (ID: ${course.id})`);
-  
     try {
       const response = await fetch('http://localhost:3001/add-to-cart', {
         method: 'POST',
@@ -71,7 +67,6 @@ function App() {
       });
   
       if (response.ok) {
-        console.log("Curso añadido al carrito exitosamente.");
         fetchCart(user.id);
       } else {
         console.error("Error al añadir al carrito:", response.statusText);

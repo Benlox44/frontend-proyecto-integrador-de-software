@@ -5,8 +5,6 @@ const Cart = ({ cart, removeFromCart, loadingCart }) => {
     return <div>Cargando carrito...</div>;
   }
 
-  console.log("Cart items:", cart);
-
   const handleCheckout = async () => {
     try {
       const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
