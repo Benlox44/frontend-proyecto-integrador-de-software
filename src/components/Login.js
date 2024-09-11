@@ -13,9 +13,9 @@ const Login = ({ setCurrentPage, setUser, fetchCart }) => {
 
       if (response.ok) {
         const user = await response.json();
-        setUser(user); // Establecer el usuario
+        setUser(user);
         setCurrentPage('home');
-        await fetchCart(user.id); // Cargar el carrito después de iniciar sesión
+        await fetchCart(user.id);
       } else {
         const errorData = await response.json();
         alert(errorData.message);

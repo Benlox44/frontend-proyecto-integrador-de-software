@@ -32,8 +32,14 @@ function App() {
         setLoading(false);
       }
     };
+  
+    const localCart = localStorage.getItem('cart');
+    if (!user && localCart) {
+      setCart(JSON.parse(localCart));
+    }
+  
     fetchCourses();
-  }, []);
+  }, [user]);  
 
   const fetchCart = async (userId) => {
     setLoadingCart(true);
@@ -54,9 +60,12 @@ function App() {
 
   const addToCart = async (course) => {
     if (!user) {
-      setCurrentPage('login');
+      const localCart = [...cart, course];
+      setCart(localCart);
+      localStorage.setItem('cart', JSON.stringify(localCart)); // Guardar carrito en localStorage
       return;
     }
+
     try {
       const response = await fetch('http://localhost:3001/add-to-cart', {
         method: 'POST',
@@ -78,7 +87,9 @@ function App() {
 
   const removeFromCart = async (courseId) => {
     if (!user) {
-      setCurrentPage('login');
+      const updatedCart = cart.filter(course => course.id !== courseId);
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart)); // Actualizar carrito en localStorage
       return;
     }
 
@@ -102,6 +113,7 @@ function App() {
   const logout = () => {
     setUser(null);
     setCart([]);
+    localStorage.removeItem('cart');
     setCurrentPage('home');
   };
   

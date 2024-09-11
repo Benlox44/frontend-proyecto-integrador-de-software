@@ -13,6 +13,30 @@ const Register = ({ setCurrentPage, setUser }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const syncLocalCartToDatabase = async (userId) => {
+    const localCart = localStorage.getItem('cart');
+    if (localCart) {
+      const courses = JSON.parse(localCart);
+      try {
+        const response = await fetch('http://localhost:3001/sync-cart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId, courses }),
+        });
+  
+        if (!response.ok) {
+          console.error("Error al sincronizar el carrito local:", response.statusText);
+        } else {
+          localStorage.removeItem('cart');
+        }
+      } catch (error) {
+        console.error("Error al sincronizar el carrito local:", error);
+      }
+    }
+  };
+  
   const register = async (name, email, password) => {
     try {
       const response = await fetch('http://localhost:3001/register', {
@@ -22,11 +46,12 @@ const Register = ({ setCurrentPage, setUser }) => {
         },
         body: JSON.stringify({ name, email, password }),
       });
-
+  
       if (response.ok) {
         const user = await response.json();
         setUser(user);
         setCurrentPage('home');
+        syncLocalCartToDatabase(user.id);
       } else {
         const errorData = await response.json();
         setError(errorData.message);
