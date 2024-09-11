@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Login = ({ setCurrentPage, setUser }) => {
+const Login = ({ setCurrentPage, setUser, fetchCart }) => {
   const login = async (email, password) => {
     try {
       const response = await fetch('http://localhost:3001/login', {
@@ -13,8 +13,9 @@ const Login = ({ setCurrentPage, setUser }) => {
 
       if (response.ok) {
         const user = await response.json();
-        setUser(user);
+        setUser(user); // Establecer el usuario
         setCurrentPage('home');
+        await fetchCart(user.id); // Cargar el carrito después de iniciar sesión
       } else {
         const errorData = await response.json();
         alert(errorData.message);

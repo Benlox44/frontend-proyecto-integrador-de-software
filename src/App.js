@@ -106,9 +106,10 @@ function App() {
 
   const logout = () => {
     setUser(null);
+    setCart([]);
     setCurrentPage('home');
   };
-
+  
   const filteredCourses = useMemo(() => {
     let result = courses;
     if (filter.category !== 'all') {
