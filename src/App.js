@@ -59,10 +59,17 @@ function App() {
   };
 
   const addToCart = async (course) => {
+    const isCourseInCart = cart.some(item => item.id === course.id);
+
+    if (isCourseInCart) {
+      alert('Este curso ya está en tu carrito.');
+      return;
+    }
+
     if (!user) {
       const localCart = [...cart, course];
       setCart(localCart);
-      localStorage.setItem('cart', JSON.stringify(localCart)); // Guardar carrito en localStorage
+      localStorage.setItem('cart', JSON.stringify(localCart));
       return;
     }
 
@@ -89,7 +96,7 @@ function App() {
     if (!user) {
       const updatedCart = cart.filter(course => course.id !== courseId);
       setCart(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart)); // Actualizar carrito en localStorage
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
       return;
     }
 
