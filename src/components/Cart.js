@@ -1,15 +1,20 @@
 import React from 'react';
 
-const Cart = ({ cart, removeFromCart, loadingCart }) => {
+const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
   if (loadingCart) {
     return <div>Cargando carrito...</div>;
   }
 
   const handleCheckout = async () => {
+    if (!user) {
+      alert("Debes iniciar sesión para continuar con la compra.");
+      return;
+    }
+
     try {
       const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
 
-      const response = await fetch("http://localhost:3005/api/webpay/init", {
+      const response = await fetch("http://localhost:3003/api/webpay/init", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,7 +47,12 @@ const Cart = ({ cart, removeFromCart, loadingCart }) => {
       <p className="total">
         Total: ${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
       </p>
-      <button onClick={handleCheckout} className="checkoutButton">Continuar con la compra</button>
+      <button 
+        onClick={handleCheckout} 
+        className="checkoutButton"
+      >
+        Continuar con la compra
+      </button>
     </div>
   );
 };

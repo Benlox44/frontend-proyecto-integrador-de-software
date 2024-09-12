@@ -172,6 +172,7 @@ function App() {
                     cart={cart} 
                     removeFromCart={removeFromCart} 
                     loadingCart={loadingCart} 
+                    user={user}
                   />
                 )}
                 {currentPage === 'login' && (
