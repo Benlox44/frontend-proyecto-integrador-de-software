@@ -5,9 +5,16 @@ const useCart = (user) => {
   const [loadingCart, setLoadingCart] = useState(false);
 
   useEffect(() => {
-    const localCart = localStorage.getItem('cart');
-    if (!user && localCart) {
-      setCart(JSON.parse(localCart));
+    // Solo intentar cargar el carrito si el usuario está autenticado
+    if (user) {
+      fetchCart(user.id);
+    } else {
+      const localCart = localStorage.getItem('cart');
+      if (localCart) {
+        setCart(JSON.parse(localCart));
+      } else {
+        setCart([]); // Limpiar el carrito si no hay usuario ni carrito local
+      }
     }
   }, [user]);
 
@@ -30,7 +37,6 @@ const useCart = (user) => {
 
   const addToCart = async (course) => {
     const isCourseInCart = cart.some(item => item.id === course.id);
-
     if (isCourseInCart) {
       alert('Este curso ya está en tu carrito.');
       return;
@@ -46,12 +52,9 @@ const useCart = (user) => {
     try {
       const response = await fetch('http://localhost:3001/add-to-cart', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, courseId: course.id }),
       });
-  
       if (response.ok) {
         fetchCart(user.id);
       } else {
@@ -73,9 +76,7 @@ const useCart = (user) => {
     try {
       const response = await fetch('http://localhost:3001/remove-from-cart', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user.id, courseId }),
       });
 
@@ -87,7 +88,12 @@ const useCart = (user) => {
     }
   };
 
-  return { cart, addToCart, removeFromCart, fetchCart, loadingCart };
+  const clearCart = () => {
+    setCart([]); // Limpiar el carrito en el estado
+    localStorage.removeItem('cart'); // Eliminar el carrito de localStorage
+  };
+
+  return { cart, loadingCart, addToCart, removeFromCart, clearCart };
 };
 
 export default useCart;

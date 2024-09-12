@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const useAuth = () => {
+const useAuth = (clearCart) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -18,7 +18,8 @@ const useAuth = () => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
-    localStorage.removeItem('cart');
+    // Limpiar el carrito solo si el usuario estaba autenticado
+    clearCart();
   };
 
   return { user, login, logout };

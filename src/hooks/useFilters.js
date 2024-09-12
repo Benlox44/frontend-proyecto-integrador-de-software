@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const useFilters = (courses) => {
   const [filter, setFilter] = useState({ category: 'all', sort: 'default' });

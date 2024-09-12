@@ -10,18 +10,17 @@ import PurchaseSuccess from './pages/PurchaseSuccess';
 import PurchaseFailure from './pages/PurchaseFailure';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './styles/App.css';
-import useCart from './hooks/useCart';
 import useFilters from './hooks/useFilters';
-import useAuth from './hooks/useAuth';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [cart, setCart] = useState([]);
+  const [user, setUser] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingCart, setLoadingCart] = useState(false);
 
-  const { user, login, logout } = useAuth();
-  const { cart, addToCart, removeFromCart, fetchCart, loadingCart } = useCart(user);
   const { filter, setFilter, filteredCourses } = useFilters(courses);
 
   useEffect(() => {
@@ -35,10 +34,99 @@ function App() {
         setLoading(false);
       }
     };
-
+  
+    const localCart = localStorage.getItem('cart');
+    if (!user && localCart) {
+      setCart(JSON.parse(localCart));
+    }
+  
     fetchCourses();
-  }, [user]);
+  }, [user]);  
 
+  const fetchCart = async (userId) => {
+    setLoadingCart(true);
+    try {
+      const cartResponse = await fetch(`http://localhost:3001/cart/${userId}`);
+
+      if (!cartResponse.ok) {
+        throw new Error("Error fetching cart from server");
+      }
+      const cartData = await cartResponse.json();
+      setCart(cartData.cart);
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      alert("Hubo un problema al cargar el carrito. Intenta nuevamente más tarde.");
+    } finally {
+      setLoadingCart(false);
+    }
+  };
+
+  const addToCart = async (course) => {
+    const isCourseInCart = cart.some(item => item.id === course.id);
+
+    if (isCourseInCart) {
+      alert('Este curso ya está en tu carrito.');
+      return;
+    }
+
+    if (!user) {
+      const localCart = [...cart, course];
+      setCart(localCart);
+      localStorage.setItem('cart', JSON.stringify(localCart));
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3001/add-to-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.id, courseId: course.id }),
+      });
+  
+      if (response.ok) {
+        fetchCart(user.id);
+      } else {
+        console.error("Error al añadir al carrito:", response.statusText);
+      }
+    } catch (error) {
+      console.error('Error al añadir al carrito:', error);
+    }
+  };
+
+  const removeFromCart = async (courseId) => {
+    if (!user) {
+      const updatedCart = cart.filter(course => course.id !== courseId);
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3001/remove-from-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: user.id, courseId }),
+      });
+
+      if (response.ok) {
+        fetchCart(user.id);
+      }
+    } catch (error) {
+      alert('Error al eliminar del carrito.');
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    setCart([]);
+    localStorage.removeItem('cart');
+    setCurrentPage('home');
+  };
+  
   if (loading) {
     return <div>Cargando cursos...</div>;
   }
@@ -79,21 +167,21 @@ function App() {
                 )}
                 {currentPage === 'login' && (
                   <Login 
-                    setUser={login}  
+                    setUser={setUser}  
                     setCurrentPage={setCurrentPage} 
                     fetchCart={fetchCart}
                   />
                 )}
                 {currentPage === 'register' && (
                   <Register 
-                    setUser={login}  
+                    setUser={setUser}  
                     setCurrentPage={setCurrentPage} 
                   />
                 )}
                 {currentPage === 'editProfile' && user && (
                   <EditProfile 
                     user={user} 
-                    setUser={login} 
+                    setUser={setUser} 
                     setCurrentPage={setCurrentPage} 
                   />
                 )}
