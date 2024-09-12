@@ -35,13 +35,21 @@ function App() {
       }
     };
   
-    const localCart = localStorage.getItem('cart');
-    if (!user && localCart) {
-      setCart(JSON.parse(localCart));
+    const localUser = localStorage.getItem('user');
+    if (localUser) {
+      const parsedUser = JSON.parse(localUser);
+      setUser(parsedUser);
+      fetchCart(parsedUser.id);
+    } else {
+      const localCart = localStorage.getItem('cart');
+      if (localCart) {
+        setCart(JSON.parse(localCart));
+      }
     }
   
     fetchCourses();
-  }, [user]);  
+  }, []);
+  
 
   const fetchCart = async (userId) => {
     setLoadingCart(true);
@@ -123,6 +131,7 @@ function App() {
   const logout = () => {
     setUser(null);
     setCart([]);
+    localStorage.removeItem('user');
     localStorage.removeItem('cart');
     setCurrentPage('home');
   };

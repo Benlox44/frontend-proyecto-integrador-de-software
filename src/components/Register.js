@@ -50,6 +50,7 @@ const Register = ({ setCurrentPage, setUser }) => {
       if (response.ok) {
         const user = await response.json();
         setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
         setCurrentPage('home');
         syncLocalCartToDatabase(user.id);
       } else {

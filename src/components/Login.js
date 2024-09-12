@@ -14,6 +14,7 @@ const Login = ({ setCurrentPage, setUser, fetchCart }) => {
       if (response.ok) {
         const user = await response.json();
         setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
         setCurrentPage('home');
         await fetchCart(user.id);
       } else {
