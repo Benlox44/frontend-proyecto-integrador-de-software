@@ -6,25 +6,23 @@ const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
   }
 
   const handleCheckout = async () => {
-    if (!user) {
-      alert("Debes iniciar sesión para continuar con la compra.");
-      return;
-    }
-
+    const token = localStorage.getItem('token');
+  
     try {
       const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
-
+  
       const response = await fetch("http://localhost:3003/api/webpay/init", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           totalAmount,
           courses: cart,
         }),
       });
-
+  
       const data = await response.json();
       if (data.url && data.token) {
         window.location.href = `${data.url}?token_ws=${data.token}`;
@@ -32,7 +30,7 @@ const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
     } catch (error) {
       console.error("Error iniciando transacción:", error);
     }
-  };
+  };  
 
   return (
     <div>

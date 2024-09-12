@@ -12,11 +12,15 @@ const Login = ({ setCurrentPage, setUser, fetchCart }) => {
       });
 
       if (response.ok) {
-        const user = await response.json();
-        setUser(user);
-        localStorage.setItem('user', JSON.stringify(user));
+        const { token, id, email, name } = await response.json();
+        // Guardamos tanto el token como el usuario en localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify({ id, email, name })); // Guardar el usuario completo
+        
+        // Actualizamos el estado con la información del usuario
+        setUser({ id, email, name });
         setCurrentPage('home');
-        await fetchCart(user.id);
+        await fetchCart(id, token); // Pasamos el token aquí también
       } else {
         const errorData = await response.json();
         alert(errorData.message);
@@ -35,7 +39,7 @@ const Login = ({ setCurrentPage, setUser, fetchCart }) => {
         <button type="submit" className="primaryButton">Iniciar Sesión</button>
       </form>
       <p className="registerLink">
-        ¿No tienes una cuenta? 
+        ¿No tienes una cuenta?
         <button onClick={() => setCurrentPage('register')} className="secondaryButton">Regístrate</button>
       </p>
     </div>

@@ -34,32 +34,54 @@ function App() {
         setLoading(false);
       }
     };
-  
+
+    // Verificar si hay un token y un usuario en localStorage al recargar la página
+    const token = localStorage.getItem('token');
     const localUser = localStorage.getItem('user');
-    if (localUser) {
+    
+    console.log('Token en localStorage:', token); // Log para ver el token
+    console.log('Usuario en localStorage:', localUser); // Log para ver si el usuario está en localStorage
+
+    if (token && localUser) {
       const parsedUser = JSON.parse(localUser);
+      console.log('Usuario decodificado:', parsedUser); // Log para verificar el usuario decodificado
+
       setUser(parsedUser);
-      fetchCart(parsedUser.id);
+
+      // Comprobar si el token es válido al cargar el carrito
+      fetchCart(parsedUser.id, token);
     } else {
       const localCart = localStorage.getItem('cart');
+      console.log('Carrito local:', localCart); // Log para ver si hay un carrito local
+
       if (localCart) {
         setCart(JSON.parse(localCart));
       }
     }
-  
+
     fetchCourses();
   }, []);
-  
 
-  const fetchCart = async (userId) => {
+  // Función para obtener el carrito desde el backend
+  const fetchCart = async (userId, token) => {
     setLoadingCart(true);
     try {
-      const cartResponse = await fetch(`http://localhost:3001/cart/${userId}`);
+      console.log(`Fetching cart para el userId: ${userId} con el token: ${token}`); // Log de detalles del usuario y token
+      const cartResponse = await fetch(`http://localhost:3001/cart/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (!cartResponse.ok) {
+        console.error("Error al obtener el carrito del servidor:", cartResponse.statusText);
         throw new Error("Error fetching cart from server");
       }
+
       const cartData = await cartResponse.json();
+      console.log('Carrito recibido del backend:', cartData); // Log del carrito que se recibe del servidor
       setCart(cartData.cart);
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -85,16 +107,19 @@ function App() {
     }
 
     try {
+      const token = localStorage.getItem('token');
+      console.log('Token usado para añadir al carrito:', token); // Log del token usado para añadir al carrito
       const response = await fetch('http://localhost:3001/add-to-cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ userId: user.id, courseId: course.id }),
       });
-  
+
       if (response.ok) {
-        fetchCart(user.id);
+        fetchCart(user.id, token);
       } else {
         console.error("Error al añadir al carrito:", response.statusText);
       }
@@ -112,16 +137,19 @@ function App() {
     }
 
     try {
+      const token = localStorage.getItem('token');
+      console.log('Token usado para eliminar del carrito:', token); // Log del token usado para eliminar del carrito
       const response = await fetch('http://localhost:3001/remove-from-cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ userId: user.id, courseId }),
       });
 
       if (response.ok) {
-        fetchCart(user.id);
+        fetchCart(user.id, token);
       }
     } catch (error) {
       alert('Error al eliminar del carrito.');
@@ -129,13 +157,15 @@ function App() {
   };
 
   const logout = () => {
+    console.log('Cerrando sesión'); // Log cuando se cierra sesión
     setUser(null);
     setCart([]);
     localStorage.removeItem('user');
     localStorage.removeItem('cart');
+    localStorage.removeItem('token');
     setCurrentPage('home');
   };
-  
+
   if (loading) {
     return <div>Cargando cursos...</div>;
   }
@@ -143,12 +173,12 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <Header 
-          currentPage={currentPage} 
-          setCurrentPage={setCurrentPage} 
-          cart={cart} 
-          user={user} 
-          logout={logout} 
+        <Header
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          cart={cart}
+          user={user}
+          logout={logout}
         />
         <main>
           <Routes>
@@ -157,49 +187,49 @@ function App() {
             <Route path="/" element={
               <>
                 {currentPage === 'home' && (
-                  <Home 
-                    courses={courses} 
-                    addToCart={addToCart} 
-                    setSelectedCourse={setSelectedCourse} 
-                    setCurrentPage={setCurrentPage} 
-                    filter={filter} 
-                    setFilter={setFilter} 
-                    filteredCourses={filteredCourses} 
+                  <Home
+                    courses={courses}
+                    addToCart={addToCart}
+                    setSelectedCourse={setSelectedCourse}
+                    setCurrentPage={setCurrentPage}
+                    filter={filter}
+                    setFilter={setFilter}
+                    filteredCourses={filteredCourses}
                   />
                 )}
                 {currentPage === 'cart' && (
-                  <Cart 
-                    cart={cart} 
-                    removeFromCart={removeFromCart} 
-                    loadingCart={loadingCart} 
+                  <Cart
+                    cart={cart}
+                    removeFromCart={removeFromCart}
+                    loadingCart={loadingCart}
                     user={user}
                   />
                 )}
                 {currentPage === 'login' && (
-                  <Login 
-                    setUser={setUser}  
-                    setCurrentPage={setCurrentPage} 
+                  <Login
+                    setUser={setUser}
+                    setCurrentPage={setCurrentPage}
                     fetchCart={fetchCart}
                   />
                 )}
                 {currentPage === 'register' && (
-                  <Register 
-                    setUser={setUser}  
-                    setCurrentPage={setCurrentPage} 
+                  <Register
+                    setUser={setUser}
+                    setCurrentPage={setCurrentPage}
                   />
                 )}
                 {currentPage === 'editProfile' && user && (
-                  <EditProfile 
-                    user={user} 
-                    setUser={setUser} 
-                    setCurrentPage={setCurrentPage} 
+                  <EditProfile
+                    user={user}
+                    setUser={setUser}
+                    setCurrentPage={setCurrentPage}
                   />
                 )}
                 {currentPage === 'details' && selectedCourse && (
-                  <CourseDetails 
-                    selectedCourse={selectedCourse} 
-                    addToCart={addToCart} 
-                    setCurrentPage={setCurrentPage} 
+                  <CourseDetails
+                    selectedCourse={selectedCourse}
+                    addToCart={addToCart}
+                    setCurrentPage={setCurrentPage}
                   />
                 )}
               </>
