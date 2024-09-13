@@ -111,8 +111,7 @@ function App() {
       localStorage.setItem('cart', JSON.stringify(updatedCart));
       return;
     }
-  
-    // Si hay un usuario logueado, añadir el curso al carrito del backend
+
     try {
       const token = localStorage.getItem('token');
       if (!token) {

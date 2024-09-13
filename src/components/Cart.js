@@ -20,7 +20,7 @@ const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
     try {
       const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
   
-      const response = await fetch("http://localhost:3003/webpay/init", {
+      const response = await fetch("http://localhost:3003/purchase/init", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
