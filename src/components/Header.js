@@ -7,7 +7,7 @@ const Header = ({ currentPage, setCurrentPage, cart, user, logout }) => (
     <nav className="nav">
       <button onClick={() => setCurrentPage('home')} className="primaryButton">Cursos</button>
       <button onClick={() => setCurrentPage('cart')} className="secondaryButton">
-        Carrito ({cart.length})
+      Carrito ({cart ? cart.length : 0})
       </button>
       {user ? (
         <>

@@ -13,9 +13,30 @@ const Register = ({ setCurrentPage, setUser }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const syncCartToServer = async (localCart, userId, token) => {
+    try {
+      const response = await fetch('http://localhost:3001/users/sync-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId, courses: localCart }),
+      });
+
+      if (!response.ok) {
+        console.error('Error al sincronizar el carrito con el servidor:', response.statusText);
+      } else {
+        console.log('Carrito sincronizado correctamente con el servidor.');
+      }
+    } catch (error) {
+      console.error('Error al sincronizar el carrito local con el servidor:', error);
+    }
+  };
+
   const register = async (name, email, password) => {
     try {
-      const response = await fetch('http://localhost:3001/register', {
+      const response = await fetch('http://localhost:3001/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,16 +46,21 @@ const Register = ({ setCurrentPage, setUser }) => {
 
       if (response.ok) {
         const { token, id, email, name } = await response.json();
-        // Guardamos tanto el token como el usuario en localStorage
         localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify({ id, email, name })); // Guardar el usuario completo
+        localStorage.setItem('user', JSON.stringify({ id, email, name }));
 
-        // Actualizamos el estado con la información del usuario
+        const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        if (localCart.length > 0) {
+          await syncCartToServer(localCart, id, token);
+          localStorage.removeItem('cart');
+        }
+
         setUser({ id, email, name });
         setCurrentPage('home');
       } else {
         const errorData = await response.json();
-        setError(errorData.message);
+        setError(errorData.message); // Mostrar el mensaje de error en el frontend
       }
     } catch (error) {
       setError('Error al registrar usuario. Intenta nuevamente más tarde.');
@@ -54,7 +80,7 @@ const Register = ({ setCurrentPage, setUser }) => {
   return (
     <div className="courseCard">
       <h2 className="title">Registrarse</h2>
-      {error && <p className="errorMessage">{error}</p>}
+      {error && <p className="errorMessage" style={{ color: 'red' }}>{error}</p>}  {/* Mostrar error */}
       <form onSubmit={handleSubmit} className="form">
         <input
           type="text"

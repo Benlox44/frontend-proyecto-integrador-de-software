@@ -1,17 +1,26 @@
 import React from 'react';
 
 const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
+  console.log('Renderizando el carrito con:', cart);
+  if (!cart || cart.length === 0) {
+    return <div>El carrito está vacío</div>;
+  }
   if (loadingCart) {
     return <div>Cargando carrito...</div>;
   }
 
   const handleCheckout = async () => {
+    if (!user) {
+      alert('Debes iniciar sesión o registrarte para continuar con la compra.');
+      return;
+    }
+
     const token = localStorage.getItem('token');
   
     try {
       const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
   
-      const response = await fetch("http://localhost:3003/api/webpay/init", {
+      const response = await fetch("http://localhost:3003/webpay/init", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

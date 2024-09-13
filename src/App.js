@@ -27,89 +27,101 @@ function App() {
     const fetchCourses = async () => {
       try {
         const response = await fetch('http://localhost:3002/courses');
+        if (!response.ok) {
+          throw new Error('Error al obtener los cursos');
+        }
         const data = await response.json();
         setCourses(data);
-        setLoading(false);
       } catch (error) {
+        console.error('Error al cargar los cursos:', error);
+        alert('Hubo un problema al cargar los cursos. Intenta nuevamente más tarde.');
+      } finally {
         setLoading(false);
       }
     };
-
-    // Verificar si hay un token y un usuario en localStorage al recargar la página
     const token = localStorage.getItem('token');
     const localUser = localStorage.getItem('user');
-    
-    console.log('Token en localStorage:', token); // Log para ver el token
-    console.log('Usuario en localStorage:', localUser); // Log para ver si el usuario está en localStorage
-
+  
     if (token && localUser) {
-      const parsedUser = JSON.parse(localUser);
-      console.log('Usuario decodificado:', parsedUser); // Log para verificar el usuario decodificado
-
-      setUser(parsedUser);
-
-      // Comprobar si el token es válido al cargar el carrito
-      fetchCart(parsedUser.id, token);
-    } else {
-      const localCart = localStorage.getItem('cart');
-      console.log('Carrito local:', localCart); // Log para ver si hay un carrito local
-
-      if (localCart) {
-        setCart(JSON.parse(localCart));
+      try {
+        const parsedUser = JSON.parse(localUser);
+        setUser(parsedUser);
+        fetchCart(parsedUser.id, token);
+      } catch (error) {
+        console.error('Error al decodificar el usuario:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
       }
+    } else {
+      const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+      setCart(localCart);
     }
-
     fetchCourses();
   }, []);
+  
 
-  // Función para obtener el carrito desde el backend
   const fetchCart = async (userId, token) => {
     setLoadingCart(true);
     try {
-      console.log(`Fetching cart para el userId: ${userId} con el token: ${token}`); // Log de detalles del usuario y token
-      const cartResponse = await fetch(`http://localhost:3001/cart/${userId}`, {
+      console.log(`Fetching cart para el userId: ${userId} con el token: ${token}`);
+      const cartResponse = await fetch(`http://localhost:3001/users/cart/${userId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (!cartResponse.ok) {
         console.error("Error al obtener el carrito del servidor:", cartResponse.statusText);
         throw new Error("Error fetching cart from server");
       }
-
+  
       const cartData = await cartResponse.json();
-      console.log('Carrito recibido del backend:', cartData); // Log del carrito que se recibe del servidor
-      setCart(cartData.cart);
+      console.log('Carrito recibido del backend:', cartData);
+  
+      // Verificar que cartData.cart es un array antes de actualizar el estado
+      if (Array.isArray(cartData.cart)) {
+        setCart(cartData.cart);
+      } else {
+        console.error('La respuesta del backend no contiene un array:', cartData.cart);
+      }
     } catch (error) {
       console.error("Error fetching cart:", error);
       alert("Hubo un problema al cargar el carrito. Intenta nuevamente más tarde.");
     } finally {
       setLoadingCart(false);
     }
-  };
+  };  
 
   const addToCart = async (course) => {
-    const isCourseInCart = cart.some(item => item.id === course.id);
-
-    if (isCourseInCart) {
-      alert('Este curso ya está en tu carrito.');
-      return;
-    }
-
     if (!user) {
-      const localCart = [...cart, course];
-      setCart(localCart);
-      localStorage.setItem('cart', JSON.stringify(localCart));
+      // Si no hay usuario logueado, guardar el curso en el carrito local
+      const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+      
+      const isCourseInLocalCart = localCart.some(item => item.id === course.id);
+      
+      if (isCourseInLocalCart) {
+        alert('Este curso ya está en tu carrito.');
+        return;
+      }
+  
+      const updatedCart = [...localCart, course];
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
       return;
     }
-
+  
+    // Si hay un usuario logueado, añadir el curso al carrito del backend
     try {
       const token = localStorage.getItem('token');
-      console.log('Token usado para añadir al carrito:', token); // Log del token usado para añadir al carrito
-      const response = await fetch('http://localhost:3001/add-to-cart', {
+      if (!token) {
+        alert('No se encontró el token de autenticación.');
+        return;
+      }
+  
+      console.log('Token usado para añadir al carrito:', token);
+      const response = await fetch('http://localhost:3001/users/add-to-cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,8 +129,10 @@ function App() {
         },
         body: JSON.stringify({ userId: user.id, courseId: course.id }),
       });
-
-      if (response.ok) {
+  
+      if (response.status === 409) { // Verifica si el error es un conflicto
+        alert('Este curso ya está en tu carrito.');
+      } else if (response.ok) {
         fetchCart(user.id, token);
       } else {
         console.error("Error al añadir al carrito:", response.statusText);
@@ -126,7 +140,7 @@ function App() {
     } catch (error) {
       console.error('Error al añadir al carrito:', error);
     }
-  };
+  };  
 
   const removeFromCart = async (courseId) => {
     if (!user) {
@@ -138,8 +152,8 @@ function App() {
 
     try {
       const token = localStorage.getItem('token');
-      console.log('Token usado para eliminar del carrito:', token); // Log del token usado para eliminar del carrito
-      const response = await fetch('http://localhost:3001/remove-from-cart', {
+      console.log('Token usado para eliminar del carrito:', token);
+      const response = await fetch('http://localhost:3001/users/remove-from-cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +171,7 @@ function App() {
   };
 
   const logout = () => {
-    console.log('Cerrando sesión'); // Log cuando se cierra sesión
+    console.log('Cerrando sesión');
     setUser(null);
     setCart([]);
     localStorage.removeItem('user');
