@@ -1,26 +1,38 @@
-.compraExitosaContainer {
+.purchaseSuccessContainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #259e00;
+    background-color: #e0f7fa;
+    padding: 20px;
 }
 
-.compraExitosaText {
-    color: #07fc27;
+.purchaseSuccessText {
+    color: #00796b;
     font-size: 48px;
     font-weight: bold;
     margin-bottom: 20px;
 }
 
-.volverCursosButton {
-    padding: 10px 20px;
-    background-color: #07fc27;
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
+.purchaseSuccessDetail {
+    color: #004d40;
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.goToCoursesButton {
+    padding: 12px 25px;
+    background-color: #00796b;
+    color: #ffffff;
+    font-size: 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.goToCoursesButton:hover {
+    background-color: #004d40;
 }

@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import '../styles/PurchaseSuccess.css';
 
-const CompraExitosa = () => {
-    const volverACursos = () => {
+const PurchaseSuccess = () => {
+    useEffect(() => {
+        document.querySelector('header').style.display = 'none';
+        return () => {
+            document.querySelector('header').style.display = 'block';
+        };
+    }, []);
+
+    const goToCourses = () => {
         window.location.href = 'http://localhost:3000';
     };
 
     return (
-        <div className="compraExitosaContainer">
-            <h1 className="compraExitosaText">Compra Exitosa</h1>
-            <p className="compraExitosaDetalle">¡Felicidades! Tu compra se ha realizado exitosamente.</p>
-            <button onClick={volverACursos}>Volver a Cursos</button>
+        <div className="purchaseSuccessContainer">
+            <h1 className="purchaseSuccessText">Compra Exitosa</h1>
+            <p className="purchaseSuccessDetail">
+                ¡Felicidades! Tu compra se ha realizado exitosamente. Los detalles de tu compra han sido enviados a tu correo electrónico.
+            </p>
+            <button className="goToCoursesButton" onClick={goToCourses}>Volver a Cursos</button>
         </div>
     );
 };
 
-export default CompraExitosa;
+export default PurchaseSuccess;
