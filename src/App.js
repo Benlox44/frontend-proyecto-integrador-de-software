@@ -20,8 +20,9 @@ function App() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingCart, setLoadingCart] = useState(false);
+  const [ownedCourses, setOwnedCourses] = useState([]);
 
-  const { filter, setFilter, filteredCourses } = useFilters(courses);
+  const { filter, setFilter, filteredCourses } = useFilters(courses, ownedCourses);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -80,15 +81,36 @@ function App() {
       const cartData = await cartResponse.json();
       console.log('Carrito recibido del backend:', cartData);
   
-      // Verificar que cartData.cart es un array antes de actualizar el estado
       if (Array.isArray(cartData.cart)) {
         setCart(cartData.cart);
       } else {
         console.error('La respuesta del backend no contiene un array:', cartData.cart);
       }
+  
+      const ownedResponse = await fetch(`http://localhost:3001/users/owned/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!ownedResponse.ok) {
+        console.error("Error al obtener los cursos comprados del servidor:", ownedResponse.statusText);
+        throw new Error("Error fetching owned courses from server");
+      }
+  
+      const ownedData = await ownedResponse.json();
+      console.log('Cursos en posesión recibidos del backend:', ownedData);
+  
+      if (Array.isArray(ownedData.owned)) {
+        setOwnedCourses(ownedData.owned);
+      } else {
+        console.error('La respuesta del backend no contiene un array:', ownedData.owned);
+      }
     } catch (error) {
-      console.error("Error fetching cart:", error);
-      alert("Hubo un problema al cargar el carrito. Intenta nuevamente más tarde.");
+      console.error("Error fetching cart or owned courses:", error);
+      alert("Hubo un problema al cargar el carrito o los cursos en posesión. Intenta nuevamente más tarde.");
     } finally {
       setLoadingCart(false);
     }
@@ -96,7 +118,6 @@ function App() {
 
   const addToCart = async (course) => {
     if (!user) {
-      // Si no hay usuario logueado, guardar el curso en el carrito local
       const localCart = JSON.parse(localStorage.getItem('cart')) || [];
       
       const isCourseInLocalCart = localCart.some(item => item.id === course.id);
@@ -208,6 +229,7 @@ function App() {
                     filter={filter}
                     setFilter={setFilter}
                     filteredCourses={filteredCourses}
+                    ownedCourses={ownedCourses}
                   />
                 )}
                 {currentPage === 'cart' && (
