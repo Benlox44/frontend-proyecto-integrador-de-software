@@ -1,6 +1,6 @@
 import React from 'react';
 import CourseCard from './CourseCard';
-import '../styles/Home.css';
+import { Typography, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel } from '@mui/material';
 
 const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, setFilter, filteredCourses, ownedCourses }) => {
   const handleToggleShowOwned = () => {
@@ -9,44 +9,49 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
 
   return (
     <div>
-      <h2 className="title">Cursos Disponibles</h2>
-      
-      <div className="filters">
-        <select 
-          className="select" 
-          onChange={(e) => setFilter(prev => ({ ...prev, category: e.target.value }))}
-        >
-          <option value="all">Todas las categorías</option>
-          <option value="Programación">Programación</option>
-          <option value="Diseño">Diseño</option>
-          <option value="Marketing">Marketing</option>
-          <option value="Fotografía">Fotografía</option>
-          <option value="Gastronomía">Gastronomía</option>
-        </select>
+      <Typography variant="h4" gutterBottom>Cursos Disponibles</Typography>
 
-        <select 
-          className="select"
-          onChange={(e) => setFilter(prev => ({ ...prev, sort: e.target.value }))}
-        >
-          <option value="default">Por defecto</option>
-          <option value="price-asc">Precio: Menor a Mayor</option>
-          <option value="price-desc">Precio: Mayor a Menor</option>
-          <option value="alpha">Alfabéticamente</option>
-        </select>
+      <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+        <FormControl variant="outlined" style={{ minWidth: '150px' }}>
+          <InputLabel>Categoría</InputLabel>
+          <Select
+            value={filter.category}
+            onChange={(e) => setFilter(prev => ({ ...prev, category: e.target.value }))}
+            label="Categoría"
+          >
+            <MenuItem value="all">Todas las categorías</MenuItem>
+            <MenuItem value="Programación">Programación</MenuItem>
+            <MenuItem value="Diseño">Diseño</MenuItem>
+            <MenuItem value="Marketing">Marketing</MenuItem>
+            <MenuItem value="Fotografía">Fotografía</MenuItem>
+            <MenuItem value="Gastronomía">Gastronomía</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl variant="outlined" style={{ minWidth: '150px' }}>
+          <InputLabel>Ordenar por</InputLabel>
+          <Select
+            value={filter.sort}
+            onChange={(e) => setFilter(prev => ({ ...prev, sort: e.target.value }))}
+            label="Ordenar por"
+          >
+            <MenuItem value="default">Por defecto</MenuItem>
+            <MenuItem value="price-asc">Precio: Menor a Mayor</MenuItem>
+            <MenuItem value="price-desc">Precio: Mayor a Menor</MenuItem>
+            <MenuItem value="alpha">Alfabéticamente</MenuItem>
+          </Select>
+        </FormControl>
       </div>
 
-      {/* Toggle Switch moved here */}
-      <div className="toggle-switch">
-        <label className="switch">
-          <input 
-            type="checkbox" 
+      <FormControlLabel
+        control={
+          <Switch
             checked={filter.showOwned}
             onChange={handleToggleShowOwned}
           />
-          <span className="slider"></span>
-        </label>
-        <span>Mostrar solo en posesión</span>
-      </div>
+        }
+        label="Mostrar solo en posesión"
+      />
 
       {filteredCourses.map(course => (
         <CourseCard 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
 
 const Login = ({ setCurrentPage, setUser, fetchCart }) => {
   const [errorMessage, setErrorMessage] = useState('');
@@ -30,19 +31,23 @@ const Login = ({ setCurrentPage, setUser, fetchCart }) => {
   };
 
   return (
-    <div className="courseCard">
-      <h2 className="title">Iniciar Sesión</h2>
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}  {/* Mostrar mensaje de error */}
-      <form onSubmit={(e) => { e.preventDefault(); login(e.target.email.value, e.target.password.value); }} className="form">
-        <input type="email" name="email" placeholder="Email" required className="input" />
-        <input type="password" name="password" placeholder="Contraseña" required className="input" />
-        <button type="submit" className="primaryButton">Iniciar Sesión</button>
-      </form>
-      <p className="registerLink">
-        ¿No tienes una cuenta?
-        <button onClick={() => setCurrentPage('register')} className="secondaryButton">Regístrate</button>
-      </p>
-    </div>
+    <Card style={{ padding: '16px', marginBottom: '16px' }}>
+      <CardContent>
+        <Typography variant="h4" gutterBottom>Iniciar Sesión</Typography>
+        {errorMessage && <Typography color="error">{errorMessage}</Typography>}
+        <form onSubmit={(e) => { e.preventDefault(); login(e.target.email.value, e.target.password.value); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <TextField label="Email" type="email" name="email" required />
+          <TextField label="Contraseña" type="password" name="password" required />
+          <Button variant="contained" color="primary" type="submit">
+            Iniciar Sesión
+          </Button>
+        </form>
+        <Typography style={{ marginTop: '16px' }}>
+          ¿No tienes una cuenta?{' '}
+          <Button color="primary" onClick={() => setCurrentPage('register')}>Regístrate</Button>
+        </Typography>
+      </CardContent>
+    </Card>
   );
 };
 

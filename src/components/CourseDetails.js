@@ -1,23 +1,26 @@
 import React from 'react';
-import '../styles/CourseCard.css';
+import { Card, CardContent, Typography, Button } from '@mui/material';
 
 const CourseDetails = ({ selectedCourse, addToCart, setCurrentPage }) => (
-  <div className="courseDetails">
-    <div className="courseDetails-content">
-      <h2 className="courseDetails-title">{selectedCourse.title}</h2>
-      <p className="courseDetails-category"><strong>Categoría:</strong> {selectedCourse.category}</p>
-      <p className="courseDetails-price"><strong>Precio:</strong> ${selectedCourse.price}</p>
+  <Card style={{ padding: '16px', marginBottom: '16px' }}>
+    <CardContent>
+      <Typography variant="h4" gutterBottom>{selectedCourse.title}</Typography>
+      <Typography variant="body1" gutterBottom><strong>Categoría:</strong> {selectedCourse.category}</Typography>
+      <Typography variant="h6" color="textSecondary"><strong>Precio:</strong> ${selectedCourse.price}</Typography>
       <div 
-        className="courseDetails-description" 
         dangerouslySetInnerHTML={{ __html: selectedCourse.description }} 
+        style={{ marginTop: '16px', marginBottom: '16px' }}
       />
+    </CardContent>
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px' }}>
+      <Button variant="contained" color="primary" onClick={() => addToCart(selectedCourse)}>
+        Añadir al carrito
+      </Button>
+      <Button variant="outlined" color="secondary" onClick={() => setCurrentPage('home')}>
+        Volver a cursos
+      </Button>
     </div>
-
-    <div className="courseDetails-footer">
-      <button onClick={() => addToCart(selectedCourse)} className="primaryButton">Añadir al carrito</button>
-      <button onClick={() => setCurrentPage('home')} className="secondaryButton">Volver a cursos</button>
-    </div>
-  </div>
+  </Card>
 );
 
 export default CourseDetails;

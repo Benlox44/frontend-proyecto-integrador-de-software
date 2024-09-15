@@ -1,12 +1,14 @@
 import React from 'react';
+import { Card, CardContent, Typography, Button, CircularProgress } from '@mui/material';
 
 const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
   console.log('Renderizando el carrito con:', cart);
+
   if (!cart || cart.length === 0) {
-    return <div>El carrito está vacío</div>;
+    return <Typography variant="h6" color="textSecondary">El carrito está vacío</Typography>;
   }
   if (loadingCart) {
-    return <div>Cargando carrito...</div>;
+    return <CircularProgress />;
   }
 
   const handleCheckout = async () => {
@@ -43,23 +45,34 @@ const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
 
   return (
     <div>
-      <h2 className="title">Carrito de Compras</h2>
+      <Typography variant="h4" gutterBottom>Carrito de Compras</Typography>
       {cart.map(item => (
-        <div key={item.id} className="courseCard">
-          <h3>{item.title}</h3>
-          <p className="price">Precio: ${item.price}</p>
-          <button onClick={() => removeFromCart(item.id)} className="removeButton">Eliminar</button>
-        </div>
+        <Card key={item.id} style={{ marginBottom: '16px' }}>
+          <CardContent>
+            <Typography variant="h5">{item.title}</Typography>
+            <Typography variant="body1" color="textSecondary">Precio: ${item.price}</Typography>
+            <Button 
+              variant="contained" 
+              color="secondary" 
+              onClick={() => removeFromCart(item.id)}
+              style={{ marginTop: '8px' }}
+            >
+              Eliminar
+            </Button>
+          </CardContent>
+        </Card>
       ))}
-      <p className="total">
+      <Typography variant="h6" style={{ marginTop: '16px' }}>
         Total: ${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
-      </p>
-      <button 
+      </Typography>
+      <Button 
+        variant="contained" 
+        color="primary" 
         onClick={handleCheckout} 
-        className="checkoutButton"
+        style={{ marginTop: '16px' }}
       >
         Continuar con la compra
-      </button>
+      </Button>
     </div>
   );
 };

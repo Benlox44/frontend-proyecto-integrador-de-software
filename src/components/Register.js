@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
 
 const Register = ({ setCurrentPage, setUser }) => {
   const [formData, setFormData] = useState({
@@ -11,27 +12,6 @@ const Register = ({ setCurrentPage, setUser }) => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const syncCartToServer = async (localCart, userId, token) => {
-    try {
-      const response = await fetch('http://localhost:3001/users/sync-cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ userId, courses: localCart }),
-      });
-
-      if (!response.ok) {
-        console.error('Error al sincronizar el carrito con el servidor:', response.statusText);
-      } else {
-        console.log('Carrito sincronizado correctamente con el servidor.');
-      }
-    } catch (error) {
-      console.error('Error al sincronizar el carrito local con el servidor:', error);
-    }
   };
 
   const register = async (name, email, password) => {
@@ -48,19 +28,11 @@ const Register = ({ setCurrentPage, setUser }) => {
         const { token, id, email, name } = await response.json();
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify({ id, email, name }));
-
-        const localCart = JSON.parse(localStorage.getItem('cart')) || [];
-
-        if (localCart.length > 0) {
-          await syncCartToServer(localCart, id, token);
-          localStorage.removeItem('cart');
-        }
-
         setUser({ id, email, name });
         setCurrentPage('home');
       } else {
         const errorData = await response.json();
-        setError(errorData.message); // Mostrar el mensaje de error en el frontend
+        setError(errorData.message);
       }
     } catch (error) {
       setError('Error al registrar usuario. Intenta nuevamente más tarde.');
@@ -78,53 +50,53 @@ const Register = ({ setCurrentPage, setUser }) => {
   };
 
   return (
-    <div className="courseCard">
-      <h2 className="title">Registrarse</h2>
-      {error && <p className="errorMessage" style={{ color: 'red' }}>{error}</p>}  {/* Mostrar error */}
-      <form onSubmit={handleSubmit} className="form">
-        <input
-          type="text"
-          name="name"
-          placeholder="Nombre"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="input"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="input"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Contraseña"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          className="input"
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirmar Contraseña"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-          className="input"
-        />
-        <button type="submit" className="primaryButton">Registrarse</button>
-      </form>
-      <p className="loginLink">
-        ¿Ya tienes una cuenta?
-        <button onClick={() => setCurrentPage('login')} className="secondaryButton">Inicia Sesión</button>
-      </p>
-    </div>
+    <Card style={{ padding: '16px', marginBottom: '16px' }}>
+      <CardContent>
+        <Typography variant="h4" gutterBottom>Registrarse</Typography>
+        {error && <Typography color="error">{error}</Typography>}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <TextField
+            label="Nombre"
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Email"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Contraseña"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Confirmar Contraseña"
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+          <Button variant="contained" color="primary" type="submit">
+            Registrarse
+          </Button>
+        </form>
+        <Typography style={{ marginTop: '16px' }}>
+          ¿Ya tienes una cuenta?{' '}
+          <Button color="primary" onClick={() => setCurrentPage('login')}>Inicia Sesión</Button>
+        </Typography>
+      </CardContent>
+    </Card>
   );
 };
 

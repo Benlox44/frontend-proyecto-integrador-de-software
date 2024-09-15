@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
 
 const EditProfile = ({ user, setUser }) => {
   const [formData, setFormData] = useState({
@@ -53,47 +54,47 @@ const EditProfile = ({ user, setUser }) => {
   };
 
   return (
-    <div className="courseCard">
-      <h2 className="title">Editar Perfil</h2>
-      {error && <p className="errorMessage">{error}</p>}
-      <form onSubmit={handleSubmit} className="form">
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Nombre"
-          required
-          className="input"
-        />
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Correo electrónico"
-          required
-          className="input"
-        />
-        <input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Nueva Contraseña (opcional)"
-          className="input"
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Confirmar Contraseña"
-          className="input"
-        />
-        <button type="submit" className="primaryButton">Actualizar Perfil</button>
-      </form>
-    </div>
+    <Card style={{ padding: '16px', marginBottom: '16px' }}>
+      <CardContent>
+        <Typography variant="h4" gutterBottom>Editar Perfil</Typography>
+        {error && <Typography color="error">{error}</Typography>}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <TextField
+            label="Nombre"
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Correo electrónico"
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            label="Nueva Contraseña (opcional)"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          <TextField
+            label="Confirmar Contraseña"
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+          <Button variant="contained" color="primary" type="submit">
+            Actualizar Perfil
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
