@@ -11,6 +11,7 @@ import PurchaseSuccess from './pages/PurchaseSuccess';
 import PurchaseFailure from './pages/PurchaseFailure';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import theme from './styles/theme';
 import useFilters from './hooks/useFilters';
 
@@ -208,11 +209,12 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <div className="app">
-          <Header currentPage={currentPage} setCurrentPage={setCurrentPage} cart={cart} user={user} logout={logout} />
-          <main>
-            <Routes>
+  <Router>
+    <Box sx={{ background: 'linear-gradient(135deg, #e0f7fa, #25cfe6)', minHeight: '100vh', padding: '16px' }}>
+      <div className="app">
+        <Header currentPage={currentPage} setCurrentPage={setCurrentPage} cart={cart} user={user} logout={logout} />
+        <main>
+          <Routes>
               <Route path="/purchase-failure" element={<PurchaseFailure />} />
               <Route path="/purchase-success" element={<PurchaseSuccess />} />
               <Route path="/" element={
@@ -252,10 +254,11 @@ function App() {
                 </>
               } />
             </Routes>
-          </main>
-        </div>
-      </Router>
-    </ThemeProvider>
+        </main>
+      </div>
+    </Box>
+  </Router>
+</ThemeProvider>
   );
 }
 

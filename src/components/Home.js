@@ -1,12 +1,28 @@
 // components/Home.js
 import React from 'react';
 import CourseCard from './CourseCard';
+import { Skeleton, Card, CardContent } from '@mui/material';
 import { Typography, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel, Grid, Box } from '@mui/material';
 
-const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, setFilter, filteredCourses, ownedCourses }) => {
-  const handleToggleShowOwned = () => {
-    setFilter(prev => ({ ...prev, showOwned: !prev.showOwned }));
-  };
+const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, setFilter, filteredCourses, ownedCourses, loading }) => {
+  if (loading) {
+    return (
+      <Grid container spacing={3} justifyContent="center" sx={{ padding: '16px' }}>
+        {[...Array(6)].map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Card sx={{ maxWidth: 300, margin: '0 auto', borderRadius: '12px' }}>
+              <CardContent>
+                <Skeleton variant="rectangular" width="100%" height={118} />
+                <Skeleton variant="text" sx={{ fontSize: '1.5rem' }} />
+                <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+                <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    );
+  }
 
   return (
     <Box sx={{ padding: '16px' }}>
@@ -54,7 +70,7 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
         label="Mostrar solo en posesión"
       />
 
-      <Grid container spacing={3} justifyContent="center">
+      <Grid container spacing={3} justifyContent="center" sx={{ padding: '16px' }}>
         {filteredCourses.map(course => (
           <Grid item xs={12} sm={6} md={4} key={course.id}>
             <CourseCard 
