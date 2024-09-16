@@ -1,12 +1,11 @@
-// components/Header.js
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, Badge } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const Header = ({ currentPage, setCurrentPage, cart, user, logout }) => (
-  <AppBar position="static" sx={{ marginBottom: '20px', background: 'linear-gradient(90deg, #00796b, #80cbc4)', boxShadow: 4 }}>
+  <AppBar position="static" style={{ marginBottom: '20px' }}>
     <Toolbar>
-      <Typography variant="h6" sx={{ flexGrow: 1 }}>
+      <Typography variant="h6" style={{ flexGrow: 1 }}>
         CursosOnline
       </Typography>
       <Button color="inherit" onClick={() => setCurrentPage('home')}>Cursos</Button>
@@ -17,7 +16,7 @@ const Header = ({ currentPage, setCurrentPage, cart, user, logout }) => (
       </IconButton>
       {user ? (
         <>
-          <Typography variant="body1" sx={{ marginRight: '10px' }}>{user.name}</Typography>
+          <Typography variant="body1" style={{ marginRight: '10px' }}>{user.name}</Typography>
           <Button color="inherit" onClick={() => setCurrentPage('editProfile')}>Editar Perfil</Button>
           <Button color="inherit" onClick={logout}>Cerrar Sesión</Button>
         </>

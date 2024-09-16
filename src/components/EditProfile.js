@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
+import { Card, CardContent, TextField, Button, Typography, Box } from '@mui/material';
 
 const EditProfile = ({ user, setUser }) => {
   const [formData, setFormData] = useState({
