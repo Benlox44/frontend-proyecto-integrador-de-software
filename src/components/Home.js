@@ -1,6 +1,7 @@
+// components/Home.js
 import React from 'react';
 import CourseCard from './CourseCard';
-import { Typography, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel } from '@mui/material';
+import { Typography, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel, Grid, Box } from '@mui/material';
 
 const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, setFilter, filteredCourses, ownedCourses }) => {
   const handleToggleShowOwned = () => {
@@ -8,11 +9,11 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
   };
 
   return (
-    <div>
+    <Box sx={{ padding: '16px' }}>
       <Typography variant="h4" gutterBottom>Cursos Disponibles</Typography>
 
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-        <FormControl variant="outlined" style={{ minWidth: '150px' }}>
+      <Box sx={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+        <FormControl variant="outlined" sx={{ minWidth: '150px' }}>
           <InputLabel>Categoría</InputLabel>
           <Select
             value={filter.category}
@@ -28,7 +29,7 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
           </Select>
         </FormControl>
 
-        <FormControl variant="outlined" style={{ minWidth: '150px' }}>
+        <FormControl variant="outlined" sx={{ minWidth: '150px' }}>
           <InputLabel>Ordenar por</InputLabel>
           <Select
             value={filter.sort}
@@ -41,7 +42,7 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
             <MenuItem value="alpha">Alfabéticamente</MenuItem>
           </Select>
         </FormControl>
-      </div>
+      </Box>
 
       <FormControlLabel
         control={
@@ -53,17 +54,20 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
         label="Mostrar solo en posesión"
       />
 
-      {filteredCourses.map(course => (
-        <CourseCard 
-          key={course.id} 
-          course={course} 
-          addToCart={addToCart} 
-          setSelectedCourse={setSelectedCourse}
-          setCurrentPage={setCurrentPage}
-          ownedCourses={ownedCourses}
-        />
-      ))}
-    </div>
+      <Grid container spacing={3} justifyContent="center">
+        {filteredCourses.map(course => (
+          <Grid item xs={12} sm={6} md={4} key={course.id}>
+            <CourseCard 
+              course={course} 
+              addToCart={addToCart} 
+              setSelectedCourse={setSelectedCourse}
+              setCurrentPage={setCurrentPage}
+              ownedCourses={ownedCourses}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 

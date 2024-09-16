@@ -1,14 +1,13 @@
 import React from 'react';
-import { Card, CardContent, Typography, Button, CircularProgress } from '@mui/material';
+import { Card, CardContent, Typography, Button, CircularProgress, Box } from '@mui/material';
 
 const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
-  console.log('Renderizando el carrito con:', cart);
+  if (loadingCart) {
+    return <CircularProgress />;
+  }
 
   if (!cart || cart.length === 0) {
     return <Typography variant="h6" color="textSecondary">El carrito está vacío</Typography>;
-  }
-  if (loadingCart) {
-    return <CircularProgress />;
   }
 
   const handleCheckout = async () => {
@@ -44,36 +43,36 @@ const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
   };  
 
   return (
-    <div>
+    <Box>
       <Typography variant="h4" gutterBottom>Carrito de Compras</Typography>
       {cart.map(item => (
-        <Card key={item.id} style={{ marginBottom: '16px' }}>
+        <Card key={item.id} sx={{ marginBottom: '16px', boxShadow: 3 }}>
           <CardContent>
             <Typography variant="h5">{item.title}</Typography>
             <Typography variant="body1" color="textSecondary">Precio: ${item.price}</Typography>
-            <Button 
-              variant="contained" 
-              color="secondary" 
+            <Button
+              variant="contained"
+              color="error"
               onClick={() => removeFromCart(item.id)}
-              style={{ marginTop: '8px' }}
+              sx={{ marginTop: '8px' }}
             >
               Eliminar
             </Button>
           </CardContent>
         </Card>
       ))}
-      <Typography variant="h6" style={{ marginTop: '16px' }}>
+      <Typography variant="h6" sx={{ marginTop: '16px' }}>
         Total: ${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
       </Typography>
-      <Button 
-        variant="contained" 
-        color="primary" 
-        onClick={handleCheckout} 
-        style={{ marginTop: '16px' }}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleCheckout}
+        sx={{ marginTop: '16px', transition: 'background-color 0.3s' }}
       >
         Continuar con la compra
       </Button>
-    </div>
+    </Box>
   );
 };
 

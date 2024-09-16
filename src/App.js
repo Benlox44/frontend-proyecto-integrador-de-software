@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Home from './components/Home';
@@ -9,7 +10,8 @@ import EditProfile from './components/EditProfile';
 import PurchaseSuccess from './pages/PurchaseSuccess';
 import PurchaseFailure from './pages/PurchaseFailure';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './styles/App.css';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './styles/theme';
 import useFilters from './hooks/useFilters';
 
 function App() {
@@ -205,74 +207,55 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="app">
-        <Header
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          cart={cart}
-          user={user}
-          logout={logout}
-        />
-        <main>
-          <Routes>
-            <Route path="/purchase-failure" element={<PurchaseFailure />} />
-            <Route path="/purchase-success" element={<PurchaseSuccess />} />
-            <Route path="/" element={
-              <>
-                {currentPage === 'home' && (
-                  <Home
-                    courses={courses}
-                    addToCart={addToCart}
-                    setSelectedCourse={setSelectedCourse}
-                    setCurrentPage={setCurrentPage}
-                    filter={filter}
-                    setFilter={setFilter}
-                    filteredCourses={filteredCourses}
-                    ownedCourses={ownedCourses}
-                  />
-                )}
-                {currentPage === 'cart' && (
-                  <Cart
-                    cart={cart}
-                    removeFromCart={removeFromCart}
-                    loadingCart={loadingCart}
-                    user={user}
-                  />
-                )}
-                {currentPage === 'login' && (
-                  <Login
-                    setUser={setUser}
-                    setCurrentPage={setCurrentPage}
-                    fetchCart={fetchCart}
-                  />
-                )}
-                {currentPage === 'register' && (
-                  <Register
-                    setUser={setUser}
-                    setCurrentPage={setCurrentPage}
-                  />
-                )}
-                {currentPage === 'editProfile' && user && (
-                  <EditProfile
-                    user={user}
-                    setUser={setUser}
-                    setCurrentPage={setCurrentPage}
-                  />
-                )}
-                {currentPage === 'details' && selectedCourse && (
-                  <CourseDetails
-                    selectedCourse={selectedCourse}
-                    addToCart={addToCart}
-                    setCurrentPage={setCurrentPage}
-                  />
-                )}
-              </>
-            } />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <div className="app">
+          <Header currentPage={currentPage} setCurrentPage={setCurrentPage} cart={cart} user={user} logout={logout} />
+          <main>
+            <Routes>
+              <Route path="/purchase-failure" element={<PurchaseFailure />} />
+              <Route path="/purchase-success" element={<PurchaseSuccess />} />
+              <Route path="/" element={
+                <>
+                  {currentPage === 'home' && (
+                    <Home
+                      courses={courses}
+                      addToCart={addToCart}
+                      setSelectedCourse={setSelectedCourse}
+                      setCurrentPage={setCurrentPage}
+                      filter={filter}
+                      setFilter={setFilter}
+                      filteredCourses={filteredCourses}
+                      ownedCourses={ownedCourses}
+                    />
+                  )}
+                  {currentPage === 'cart' && (
+                    <Cart
+                      cart={cart}
+                      removeFromCart={removeFromCart}
+                      loadingCart={loadingCart}
+                      user={user}
+                    />
+                  )}
+                  {currentPage === 'login' && (
+                    <Login setUser={setUser} setCurrentPage={setCurrentPage} fetchCart={fetchCart} />
+                  )}
+                  {currentPage === 'register' && (
+                    <Register setUser={setUser} setCurrentPage={setCurrentPage} />
+                  )}
+                  {currentPage === 'editProfile' && user && (
+                    <EditProfile user={user} setUser={setUser} setCurrentPage={setCurrentPage} />
+                  )}
+                  {currentPage === 'details' && selectedCourse && (
+                    <CourseDetails selectedCourse={selectedCourse} addToCart={addToCart} setCurrentPage={setCurrentPage} />
+                  )}
+                </>
+              } />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

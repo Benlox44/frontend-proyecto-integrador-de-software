@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
+import { Card, CardContent, TextField, Button, Typography, Box } from '@mui/material';
 
 const EditProfile = ({ user, setUser }) => {
   const [formData, setFormData] = useState({
@@ -44,54 +44,24 @@ const EditProfile = ({ user, setUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (formData.password && formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
     }
-
     updateProfile();
   };
 
   return (
-    <Card style={{ padding: '16px', marginBottom: '16px' }}>
+    <Card sx={{ padding: '16px', marginBottom: '16px', boxShadow: 3 }}>
       <CardContent>
         <Typography variant="h4" gutterBottom>Editar Perfil</Typography>
         {error && <Typography color="error">{error}</Typography>}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <TextField
-            label="Nombre"
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-          <TextField
-            label="Correo electrónico"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-          <TextField
-            label="Nueva Contraseña (opcional)"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Confirmar Contraseña"
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
-          <Button variant="contained" color="primary" type="submit">
-            Actualizar Perfil
-          </Button>
+          <TextField label="Nombre" type="text" name="name" value={formData.name} onChange={handleChange} required />
+          <TextField label="Correo electrónico" type="email" name="email" value={formData.email} onChange={handleChange} required />
+          <TextField label="Nueva Contraseña (opcional)" type="password" name="password" value={formData.password} onChange={handleChange} />
+          <TextField label="Confirmar Contraseña" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} />
+          <Button variant="contained" color="primary" type="submit">Actualizar Perfil</Button>
         </form>
       </CardContent>
     </Card>
