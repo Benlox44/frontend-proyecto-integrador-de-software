@@ -161,6 +161,7 @@ function App() {
   const logout = () => {
     console.log('Cerrando sesión');
     setCart([]);
+    setOwnedCourses([]);
     localStorage.removeItem('token');
     localStorage.removeItem('cart');
     setCurrentPage('home');
@@ -210,7 +211,7 @@ function App() {
                     <UpdateProfile setCurrentPage={setCurrentPage} />
                   )}
                   {currentPage === 'details' && selectedCourse && (
-                    <CourseDetails selectedCourse={selectedCourse} addToCart={addToCart} setCurrentPage={setCurrentPage} />
+                    <CourseDetails selectedCourse={selectedCourse} addToCart={addToCart} ownedCourses={ownedCourses} setCurrentPage={setCurrentPage} />
                   )}
                 </>
               } />
