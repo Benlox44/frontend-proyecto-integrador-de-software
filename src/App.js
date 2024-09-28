@@ -62,6 +62,12 @@ function App() {
         },
       });
 
+      if (cartResponse.status === 401) {
+      alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+      logout();
+      return;
+    }
+
       if (!cartResponse.ok) {
         console.error("Error al obtener el carrito del servidor:", cartResponse.statusText);
         throw new Error("Error fetching cart from server");
