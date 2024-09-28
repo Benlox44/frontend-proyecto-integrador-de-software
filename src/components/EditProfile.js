@@ -1,28 +1,73 @@
-import React, { useState } from 'react';
-import { Card, CardContent, TextField, Button, Typography, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
 
-const EditProfile = ({ user, setUser }) => {
+const EditProfile = () => {
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
+    name: '',
+    email: '',
     password: '',
     confirmPassword: '',
   });
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('No se pudo autenticar al usuario. Por favor, inicia sesión nuevamente.');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3001/users/profile', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setFormData({
+            name: data.name,
+            email: data.email,
+            password: '',
+            confirmPassword: '',
+          });
+        } else {
+          setError('Error al cargar el perfil del usuario. Intenta nuevamente más tarde.');
+        }
+      } catch (error) {
+        setError('Error al cargar el perfil del usuario. Intenta nuevamente más tarde.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const updateProfile = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('No se pudo autenticar al usuario. Por favor, inicia sesión nuevamente.');
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:3001/updateProfile', {
+      const response = await fetch('http://localhost:3001/users/updateProfile', {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          currentEmail: user.email,
           name: formData.name,
           newEmail: formData.email,
           password: formData.password,
@@ -30,8 +75,6 @@ const EditProfile = ({ user, setUser }) => {
       });
 
       if (response.ok) {
-        const updatedUser = await response.json();
-        setUser(updatedUser);
         alert('Perfil actualizado con éxito');
       } else {
         const errorData = await response.json();
@@ -50,6 +93,10 @@ const EditProfile = ({ user, setUser }) => {
     }
     updateProfile();
   };
+
+  if (loading) {
+    return <Typography>Cargando perfil...</Typography>;
+  }
 
   return (
     <Card sx={{ padding: '16px', marginBottom: '16px', boxShadow: 3 }}>

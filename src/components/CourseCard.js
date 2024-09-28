@@ -1,4 +1,3 @@
-// components/CourseCard.js
 import React from 'react';
 import { Card, CardContent, Typography, Button } from '@mui/material';
 
@@ -12,10 +11,10 @@ const CourseCard = ({ course, addToCart, setSelectedCourse, setCurrentPage, owne
         boxShadow: 3,
         transition: 'transform 0.2s',
         '&:hover': {
-          transform: 'scale(1.02)', // Cambia el factor de escalado para evitar que se salga de la pantalla
+          transform: 'scale(1.02)',
         },
-        maxWidth: '300px', // Establece un ancho máximo para las tarjetas
-        margin: '0 auto', // Centra las tarjetas dentro de su contenedor
+        maxWidth: '300px',
+        margin: '0 auto',
       }}
     >
       <CardContent>

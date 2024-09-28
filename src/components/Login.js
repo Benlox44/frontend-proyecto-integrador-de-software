@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
 
-const Login = ({ setCurrentPage, setUser, fetchCart }) => {
+const Login = ({ setCurrentPage, fetchCart }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const login = async (email, password) => {
@@ -15,12 +15,10 @@ const Login = ({ setCurrentPage, setUser, fetchCart }) => {
       });
 
       if (response.ok) {
-        const { token, id, email, name } = await response.json();
+        const { token } = await response.json();
         localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify({ id, email, name }));
-        setUser({ id, email, name });
         setCurrentPage('home');
-        await fetchCart(id, token);
+        await fetchCart(token);
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Error al iniciar sesión');

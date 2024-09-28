@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Button, CircularProgress, Box } from '@mui/material';
 
-const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
+const Cart = ({ cart, removeFromCart, loadingCart }) => {
   if (loadingCart) {
     return <CircularProgress />;
   }
@@ -11,16 +11,15 @@ const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
   }
 
   const handleCheckout = async () => {
-    if (!user) {
+    const token = localStorage.getItem('token');
+    if (!token) {
       alert('Debes iniciar sesión o registrarte para continuar con la compra.');
       return;
     }
 
-    const token = localStorage.getItem('token');
-  
     try {
       const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
-  
+
       const response = await fetch("http://localhost:3003/purchase/init", {
         method: "POST",
         headers: {
@@ -32,7 +31,7 @@ const Cart = ({ cart, removeFromCart, loadingCart, user }) => {
           courses: cart,
         }),
       });
-  
+
       const data = await response.json();
       if (data.url && data.token) {
         window.location.href = `${data.url}?token_ws=${data.token}`;

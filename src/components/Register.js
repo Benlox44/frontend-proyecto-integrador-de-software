@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
 
-const Register = ({ setCurrentPage, setUser }) => {
+const Register = ({ setCurrentPage }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,10 +25,8 @@ const Register = ({ setCurrentPage, setUser }) => {
       });
 
       if (response.ok) {
-        const { token, id, email, name } = await response.json();
+        const { token } = await response.json();
         localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify({ id, email, name }));
-        setUser({ id, email, name });
         setCurrentPage('home');
       } else {
         const errorData = await response.json();
