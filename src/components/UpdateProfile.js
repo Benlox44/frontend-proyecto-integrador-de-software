@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
 
-const EditProfile = () => {
+const UpdateProfile = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -78,7 +78,11 @@ const EditProfile = () => {
         alert('Perfil actualizado con éxito');
       } else {
         const errorData = await response.json();
-        setError(errorData.message);
+        if (response.status === 409) {
+          setError('El correo ya está en uso. Por favor, intenta con otro.');
+        } else {
+          setError(errorData.message);
+        }
       }
     } catch (error) {
       setError('Error al actualizar perfil. Intenta nuevamente.');
@@ -115,4 +119,4 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;
+export default UpdateProfile;

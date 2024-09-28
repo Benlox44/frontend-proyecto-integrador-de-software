@@ -16,7 +16,7 @@ const Header = ({ currentPage, setCurrentPage, cart, isAuthenticated, logout }) 
       </IconButton>
       {isAuthenticated ? (
         <>
-          <Button color="inherit" onClick={() => setCurrentPage('editProfile')}>Editar Perfil</Button>
+          <Button color="inherit" onClick={() => setCurrentPage('UpdateProfile')}>Editar Perfil</Button>
           <Button color="inherit" onClick={logout}>Cerrar Sesión</Button>
         </>
       ) : (

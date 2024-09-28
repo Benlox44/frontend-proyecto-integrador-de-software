@@ -5,7 +5,7 @@ import Cart from './components/Cart';
 import CourseDetails from './components/CourseDetails';
 import Login from './components/Login';
 import Register from './components/Register';
-import EditProfile from './components/EditProfile';
+import UpdateProfile from './components/UpdateProfile';
 import PurchaseSuccess from './pages/PurchaseSuccess';
 import PurchaseFailure from './pages/PurchaseFailure';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -206,8 +206,8 @@ function App() {
                   {currentPage === 'register' && (
                     <Register setCurrentPage={setCurrentPage} />
                   )}
-                  {currentPage === 'editProfile' && !!localStorage.getItem('token') && (
-                    <EditProfile setCurrentPage={setCurrentPage} />
+                  {currentPage === 'UpdateProfile' && !!localStorage.getItem('token') && (
+                    <UpdateProfile setCurrentPage={setCurrentPage} />
                   )}
                   {currentPage === 'details' && selectedCourse && (
                     <CourseDetails selectedCourse={selectedCourse} addToCart={addToCart} setCurrentPage={setCurrentPage} />
