@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import Home from './components/Home';
 import Cart from './components/Cart';
@@ -12,6 +12,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './styles/theme';
 import useFilters from './hooks/useFilters';
+import ChatComponent from './components/ChatAi'; 
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -24,34 +25,7 @@ function App() {
 
   const { filter, setFilter, filteredCourses } = useFilters(courses, ownedCourses);
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch('http://localhost:3002/courses');
-        if (!response.ok) {
-          throw new Error('Error al obtener los cursos');
-        }
-        const data = await response.json();
-        setCourses(data);
-      } catch (error) {
-        console.error('Error al cargar los cursos:', error);
-        alert('Hubo un problema al cargar los cursos. Intenta nuevamente más tarde.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      fetchCart(token);
-    } else {
-      const localCart = JSON.parse(localStorage.getItem('cart')) || [];
-      setCart(localCart);
-    }
-    fetchCourses();
-  }, []);
-
-  const fetchCart = async (token) => {
+  const fetchCart = useCallback(async (token) => {
     setLoadingCart(true);
     try {
       const cartResponse = await fetch(`http://localhost:3001/users/cart`, {
@@ -63,10 +37,10 @@ function App() {
       });
 
       if (cartResponse.status === 401) {
-      alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-      logout();
-      return;
-    }
+        alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        logout();
+        return;
+      }
 
       if (!cartResponse.ok) {
         console.error("Error al obtener el carrito del servidor:", cartResponse.statusText);
@@ -97,12 +71,40 @@ function App() {
     } finally {
       setLoadingCart(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch('http://localhost:3002/courses');
+        if (!response.ok) {
+          throw new Error('Error al obtener los cursos');
+        }
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error('Error al cargar los cursos:', error);
+        alert('Hubo un problema al cargar los cursos. Intenta nuevamente más tarde.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      fetchCart(token);
+    } else {
+      const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+      setCart(localCart);
+    }
+
+    fetchCourses();
+  }, [fetchCart]); 
 
   const addToCart = async (course) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      // Manejo de carrito local para usuarios no registrados
       const localCart = JSON.parse(localStorage.getItem('cart')) || [];
       if (localCart.some(item => item.id === course.id)) {
         alert('Este curso ya está en tu carrito.');
@@ -139,7 +141,6 @@ function App() {
   const removeFromCart = async (courseId) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      // Manejo de carrito local para usuarios no registrados
       const updatedCart = cart.filter(course => course.id !== courseId);
       setCart(updatedCart);
       localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -181,7 +182,8 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <div className="app">
-        <Header currentPage={currentPage} setCurrentPage={setCurrentPage} cart={cart} isAuthenticated={!!localStorage.getItem('token')} logout={logout} />
+          <Header currentPage={currentPage} setCurrentPage={setCurrentPage} cart={cart} isAuthenticated={!!localStorage.getItem('token')} logout={logout} />
+          <ChatComponent /> {}
           <main>
             <Routes>
               <Route path="/purchase-failure" element={<PurchaseFailure />} />
