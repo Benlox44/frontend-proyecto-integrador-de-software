@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
 
 const CourseCard = ({ course, addToCart, setSelectedCourse, setCurrentPage, ownedCourses }) => {
   const isOwned = ownedCourses.includes(course.id);
@@ -17,6 +17,12 @@ const CourseCard = ({ course, addToCart, setSelectedCourse, setCurrentPage, owne
         margin: '0 auto',
       }}
     >
+      <CardMedia
+        component="img"
+        height="140"
+        image={course.imageUrl} // URL de la imagen
+        alt={course.title} // Texto alternativo
+      />
       <CardContent>
         <Typography variant="h5">{course.title}</Typography>
         <Typography variant="body1">Categoría: {course.category}</Typography>

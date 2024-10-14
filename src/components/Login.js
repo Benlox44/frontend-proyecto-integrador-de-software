@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, TextField, Button, Typography } from '@mui/material';
-
+import '../styles/Login.css';
 const Login = ({ setCurrentPage, fetchCart }) => {
   const [errorMessage, setErrorMessage] = useState('');
+  const [courseImages, setCourseImages] = useState([]);
 
   const login = async (email, password) => {
     try {
@@ -28,6 +29,23 @@ const Login = ({ setCurrentPage, fetchCart }) => {
     }
   };
 
+  const fetchCourseImages = async () => {
+    try {
+      const response = await fetch('http://localhost:3002/courses'); // Asegúrate de que este sea el endpoint correcto
+      if (response.ok) {
+        const courses = await response.json();
+        const images = courses.map(course => course.imageUrl); // Suponiendo que el campo es imageUrl
+        setCourseImages(images);
+      }
+    } catch (error) {
+      console.error('Error al obtener las imágenes de los cursos:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCourseImages();
+  }, []);
+
   return (
     <div style={{
       backgroundColor: '#f0f4f8', // Establece aquí tu color de fondo
@@ -35,7 +53,32 @@ const Login = ({ setCurrentPage, fetchCart }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+      position: 'relative',
     }}>
+      <div style={{
+        position: 'absolute',
+        top: '500px',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: 'hidden',
+        /*zIndex: -1,
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center'*/
+      }}>
+        <div className="image-container">
+        {[...courseImages, ...courseImages].map((imageUrl, index) => (
+            <img key={index} src={imageUrl} alt={`Curso ${index}`} className="course-image" />
+          ))}
+        </div>
+        <div className="image-container reverse">
+          {[...courseImages, ...courseImages].map((imageUrl, index) => (
+            <img key={index} src={imageUrl} alt={`Curso ${index}`} className="course-image" />
+          ))}
+        </div>
+      </div>
       <Card style={{ padding: '24px', maxWidth: '400px', margin: 'auto', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', marginTop: '50px', borderRadius: '16px' }}>
       <CardContent>
         <Typography variant="h5" style={{ marginBottom: '24px'}}>Iniciar Sesión</Typography>
