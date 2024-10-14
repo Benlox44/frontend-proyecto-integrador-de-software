@@ -2,6 +2,7 @@
 import React from 'react';
 import CourseCard from './CourseCard';
 import { Typography, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel, Grid, Box } from '@mui/material';
+import '../styles/Home.css';
 
 const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, setFilter, filteredCourses, ownedCourses }) => {
   const handleToggleShowOwned = () => {

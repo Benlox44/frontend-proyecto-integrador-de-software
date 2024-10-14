@@ -29,14 +29,21 @@ const Login = ({ setCurrentPage, fetchCart }) => {
   };
 
   return (
-    <Card style={{ padding: '16px', marginBottom: '16px' }}>
+    <div style={{
+      backgroundColor: '#f0f4f8', // Establece aquí tu color de fondo
+      height: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
+      <Card style={{ padding: '24px', maxWidth: '400px', margin: 'auto', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', marginTop: '50px', borderRadius: '16px' }}>
       <CardContent>
-        <Typography variant="h4" gutterBottom>Iniciar Sesión</Typography>
+        <Typography variant="h5" style={{ marginBottom: '24px'}}>Iniciar Sesión</Typography>
         {errorMessage && <Typography color="error">{errorMessage}</Typography>}
         <form onSubmit={(e) => { e.preventDefault(); login(e.target.email.value, e.target.password.value); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <TextField label="Email" type="email" name="email" required />
           <TextField label="Contraseña" type="password" name="password" required />
-          <Button variant="contained" color="primary" type="submit">
+          <Button variant="contained" style={{ backgroundColor: '#DBB186', color: '#fff' }}  type="submit">
             Iniciar Sesión
           </Button>
         </form>
@@ -46,6 +53,9 @@ const Login = ({ setCurrentPage, fetchCart }) => {
         </Typography>
       </CardContent>
     </Card>
+
+
+    </div>
   );
 };
 

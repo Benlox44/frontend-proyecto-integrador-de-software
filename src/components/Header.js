@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Badge } from '@mui/mat
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const Header = ({ currentPage, setCurrentPage, cart, isAuthenticated, logout }) => (
-  <AppBar position="static" style={{ marginBottom: '20px' }}>
+  <AppBar position="static" style={{ backgroundColor: '#6F5D44', boxShadow: 'none'}}>
     <Toolbar>
       <Typography variant="h6" style={{ flexGrow: 1 }}>
         CursosOnline
