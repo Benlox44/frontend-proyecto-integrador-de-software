@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Badge } from '@mui/mat
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const Header = ({ currentPage, setCurrentPage, cart, isAuthenticated, logout }) => (
-  <AppBar position="static" style={{ background: 'linear-gradient(to bottom,#1dd5c6, #00312d)', boxShadow: 'none'}}>
+  <AppBar position="static" style={{ background: 'linear-gradient(to bottom,#1dd5c6, #4B768C)', boxShadow: 'none'}}>
     <Toolbar style={{ justifyContent: 'space-between' }}>
       <Typography variant="h6" style={{ flexGrow: 1, marginLeft: '50px' }}>
         CursosOnline

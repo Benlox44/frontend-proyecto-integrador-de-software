@@ -86,7 +86,7 @@ const Login = ({ setCurrentPage, fetchCart }) => {
         <form onSubmit={(e) => { e.preventDefault(); login(e.target.email.value, e.target.password.value); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <TextField label="Email" type="email" name="email" required />
           <TextField label="Contraseña" type="password" name="password" required />
-          <Button variant="contained" style={{ backgroundColor: '#DBB186', color: '#fff' }}  type="submit">
+          <Button variant="contained" style={{ backgroundColor: '#366784', color: '#fff' }}  type="submit">
             Iniciar Sesión
           </Button>
         </form>

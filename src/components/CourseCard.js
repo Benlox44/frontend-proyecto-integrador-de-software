@@ -13,13 +13,13 @@ const CourseCard = ({ course, addToCart, setSelectedCourse, setCurrentPage, owne
         '&:hover': {
           transform: 'scale(1.02)',
         },
-        maxWidth: '300px',
+        maxWidth: '305px',
         margin: '0 auto',
       }}
     >
       <CardMedia
         component="img"
-        height="140"
+        height="162"
         image={course.imageUrl} // URL de la imagen
         alt={course.title} // Texto alternativo
       />

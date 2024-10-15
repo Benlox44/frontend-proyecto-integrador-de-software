@@ -26,7 +26,7 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
   };
 
   return (
-    <Box sx={{ padding: '80px' }}>
+    <Box sx={{ padding: '0px 100px'}}>
       <Box
         sx={{
           marginBottom: '32px',
