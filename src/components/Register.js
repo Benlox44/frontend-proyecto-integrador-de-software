@@ -48,9 +48,9 @@ const Register = ({ setCurrentPage }) => {
   };
 
   return (
-    <Card style={{ padding: '16px', marginBottom: '16px' }}>
+    <Card style={{  padding: '24px', maxWidth: '350px', margin: 'auto', marginTop: '50px', borderRadius: '16px' }}>
       <CardContent>
-        <Typography variant="h4" gutterBottom>Registrarse</Typography>
+        <Typography variant="h4"style={{ marginBottom: '24px'}} gutterBottom>Crea una cuenta</Typography>
         {error && <Typography color="error">{error}</Typography>}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <TextField
@@ -60,6 +60,7 @@ const Register = ({ setCurrentPage }) => {
             value={formData.name}
             onChange={handleChange}
             required
+            fullWidth
           />
           <TextField
             label="Email"
@@ -68,6 +69,7 @@ const Register = ({ setCurrentPage }) => {
             value={formData.email}
             onChange={handleChange}
             required
+            fullWidth
           />
           <TextField
             label="Contraseña"
@@ -76,6 +78,7 @@ const Register = ({ setCurrentPage }) => {
             value={formData.password}
             onChange={handleChange}
             required
+            fullWidth
           />
           <TextField
             label="Confirmar Contraseña"
@@ -84,15 +87,18 @@ const Register = ({ setCurrentPage }) => {
             value={formData.confirmPassword}
             onChange={handleChange}
             required
+            fullWidth
           />
           <Button variant="contained" color="primary" type="submit">
             Registrarse
           </Button>
         </form>
-        <Typography style={{ marginTop: '16px' }}>
-          ¿Ya tienes una cuenta?{' '}
-          <Button color="primary" onClick={() => setCurrentPage('login')}>Inicia Sesión</Button>
-        </Typography>
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+          <Typography>
+            ¿Ya tienes una cuenta?{' '}
+            <Button color="primary" onClick={() => setCurrentPage('login')}>Inicia Sesión</Button>
+          </Typography>
+        </div>
       </CardContent>
     </Card>
   );

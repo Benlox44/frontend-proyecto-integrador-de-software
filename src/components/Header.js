@@ -3,9 +3,9 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Badge } from '@mui/mat
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const Header = ({ currentPage, setCurrentPage, cart, isAuthenticated, logout }) => (
-  <AppBar position="static" style={{ backgroundColor: '#6F5D44', boxShadow: 'none'}}>
-    <Toolbar>
-      <Typography variant="h6" style={{ flexGrow: 1 }}>
+  <AppBar position="static" style={{ background: 'linear-gradient(to bottom,#1dd5c6, #00312d)', boxShadow: 'none'}}>
+    <Toolbar style={{ justifyContent: 'space-between' }}>
+      <Typography variant="h6" style={{ flexGrow: 1, marginLeft: '50px' }}>
         CursosOnline
       </Typography>
       <Button color="inherit" onClick={() => setCurrentPage('home')}>Cursos</Button>

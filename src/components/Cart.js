@@ -42,7 +42,7 @@ const Cart = ({ cart, removeFromCart, loadingCart }) => {
   };  
 
   return (
-    <Box>
+    <Box sx={{ margin: '40px' }}>
       <Typography variant="h4" gutterBottom>Carrito de Compras</Typography>
       {cart.map(item => (
         <Card key={item.id} sx={{ marginBottom: '16px', boxShadow: 3 }}>
@@ -63,16 +63,17 @@ const Cart = ({ cart, removeFromCart, loadingCart }) => {
       <Typography variant="h6" sx={{ marginTop: '16px' }}>
         Total: ${cart.reduce((sum, item) => sum + item.price, 0).toFixed(2)}
       </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleCheckout}
-        sx={{ marginTop: '16px', transition: 'background-color 0.3s' }}
-      >
-        Continuar con la compra
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}> {}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCheckout}
+          sx={{ transition: 'background-color 0.3s' }}
+        >
+          Continuar con la compra
+        </Button>
+      </Box>
     </Box>
   );
 };
-
 export default Cart;
