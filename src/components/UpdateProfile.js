@@ -103,9 +103,9 @@ const UpdateProfile = () => {
   }
 
   return (
-    <Card sx={{ padding: '16px', marginBottom: '16px', boxShadow: 3 }}>
+    <Card style={{ padding: '24px', maxWidth: '350px', margin: 'auto', marginTop: '50px', borderRadius: '16px' }}>
       <CardContent>
-        <Typography variant="h4" gutterBottom>Editar Perfil</Typography>
+        <Typography variant="h4" style={{ marginBottom: '24px'}} gutterBottom>Editar Perfil</Typography>
         {error && <Typography color="error">{error}</Typography>}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <TextField label="Nombre" type="text" name="name" value={formData.name} onChange={handleChange} required />
