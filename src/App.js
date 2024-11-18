@@ -8,6 +8,8 @@ import Register from './components/Register';
 import UpdateProfile from './components/UpdateProfile';
 import PurchaseSuccess from './pages/PurchaseSuccess';
 import PurchaseFailure from './pages/PurchaseFailure';
+import Profile from './components/profile';
+import RequestPasswordReset from './components/Request-password';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './styles/theme';
@@ -216,9 +218,14 @@ function App() {
                   {currentPage === 'UpdateProfile' && !!localStorage.getItem('token') && (
                     <UpdateProfile setCurrentPage={setCurrentPage} />
                   )}
+                  {currentPage === 'Profile' && (
+                    <Profile setCurrentPage={setCurrentPage} />
+                  )}
                   {currentPage === 'details' && selectedCourse && (
                     <CourseDetails selectedCourse={selectedCourse} addToCart={addToCart} ownedCourses={ownedCourses} setCurrentPage={setCurrentPage} />
                   )}
+                  {currentPage === 'requestPasswordReset' && 
+                  <RequestPasswordReset setCurrentPage={setCurrentPage} />}
                 </>
               } />
             </Routes>

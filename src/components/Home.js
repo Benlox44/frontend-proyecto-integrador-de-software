@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CourseCard from './CourseCard';
-import { Typography, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel, Grid, Box, Button, Container } from '@mui/material';
+import { Typography, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel, Grid, Box, Button, Container, TextField } from '@mui/material';
 import '../styles/Home.css';
+import ChatBot from './chat';
 
 const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, setFilter, filteredCourses, ownedCourses }) => {
   const [currentPage, setCurrentPageState] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');  
   const coursesPerPage = 9;
   
+  const filteredBySearch = filteredCourses.filter(course => 
+    (course.name?.toLowerCase().includes(searchTerm.toLowerCase())) || 
+    (course.description?.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
   const handleToggleShowOwned = () => {
     setFilter(prev => ({ ...prev, showOwned: !prev.showOwned }));
   };
+  const displayedCourses = filteredBySearch.slice(currentPage * coursesPerPage, (currentPage + 1) * coursesPerPage);
 
-  const displayedCourses = filteredCourses.slice(currentPage * coursesPerPage, (currentPage + 1) * coursesPerPage);
-  
   const nextPage = () => {
-    if ((currentPage + 1) * coursesPerPage < filteredCourses.length) {
+    if ((currentPage + 1) * coursesPerPage < filteredBySearch.length) {
       setCurrentPageState(prev => prev + 1);
     }
   };
@@ -77,8 +82,19 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
               <MenuItem value="alpha">Alfabéticamente</MenuItem>
             </Select>
           </FormControl>
-
         </Box>
+      </Box>
+
+      {/* Campo de búsqueda */}
+      <Box sx={{ marginBottom: '24px' }}>
+        <TextField
+          label="Buscar curso"
+          variant="outlined"
+          fullWidth
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          size="small"
+        />
       </Box>
 
       <FormControlLabel
@@ -105,7 +121,7 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
         ))}
       </Grid>
 
-      <Box sx={{ marginTop: '40px', display: 'flex', justifyContent: 'center' }}>
+      <Box sx={{ marginTop: '40px', marginBottom: '40px',display: 'flex', justifyContent: 'center' }}>
         <Button 
           onClick={prevPage} 
           disabled={currentPage === 0} 
@@ -116,12 +132,14 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
         </Button>
         <Button 
           onClick={nextPage} 
-          disabled={(currentPage + 1) * coursesPerPage >= filteredCourses.length} 
+          disabled={(currentPage + 1) * coursesPerPage >= filteredBySearch.length} 
           variant="contained"
         >
           Siguiente
         </Button>
       </Box>
+
+      <ChatBot />
     </Container>
   );
 };
