@@ -53,6 +53,14 @@ const UpdateProfile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const invalidExtensions = ['comm', 'con', 'cm', 'cmo', 'cll'];
+    const domainExtension = email.split('.').pop().toLowerCase();
+
+    return emailRegex.test(email) && !invalidExtensions.includes(domainExtension);
+  };
+
   const updateProfile = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -91,6 +99,16 @@ const UpdateProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (formData.email && !validateEmail(formData.email)) {
+      setError('Correo electrónico no válido.');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+    
     if (formData.password && formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;

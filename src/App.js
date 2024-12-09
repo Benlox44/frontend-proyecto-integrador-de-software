@@ -10,6 +10,7 @@ import PurchaseSuccess from './pages/PurchaseSuccess';
 import PurchaseFailure from './pages/PurchaseFailure';
 import Profile from './components/profile';
 import RequestPasswordReset from './components/Request-password';
+import ResetPassword from './components/ResetPassword';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './styles/theme';
@@ -20,6 +21,7 @@ function App() {
   const [cart, setCart] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
+  const [orderDetails, setOrderDetails] = useState(null); // Estado para los detalles de órdenes
   const [loading, setLoading] = useState(true);
   const [loadingCart, setLoadingCart] = useState(false);
   const [ownedCourses, setOwnedCourses] = useState([]);
@@ -42,6 +44,7 @@ function App() {
         setLoading(false);
       }
     };
+
     const token = localStorage.getItem('token');
 
     if (token) {
@@ -65,14 +68,14 @@ function App() {
       });
 
       if (cartResponse.status === 401) {
-      alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
-      logout();
-      return;
-    }
+        alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+        logout();
+        return;
+      }
 
       if (!cartResponse.ok) {
-        console.error("Error al obtener el carrito del servidor:", cartResponse.statusText);
-        throw new Error("Error fetching cart from server");
+        console.error('Error al obtener el carrito del servidor:', cartResponse.statusText);
+        throw new Error('Error fetching cart from server');
       }
 
       const cartData = await cartResponse.json();
@@ -87,24 +90,46 @@ function App() {
       });
 
       if (!ownedResponse.ok) {
-        console.error("Error al obtener los cursos comprados del servidor:", ownedResponse.statusText);
-        throw new Error("Error fetching owned courses from server");
+        console.error('Error al obtener los cursos comprados del servidor:', ownedResponse.statusText);
+        throw new Error('Error fetching owned courses from server');
       }
 
       const ownedData = await ownedResponse.json();
       setOwnedCourses(ownedData.owned || []);
     } catch (error) {
-      console.error("Error fetching cart or owned courses:", error);
-      alert("Hubo un problema al cargar el carrito o los cursos en posesión. Intenta nuevamente más tarde.");
+      console.error('Error fetching cart or owned courses:', error);
+      alert('Hubo un problema al cargar el carrito o los cursos en posesión. Intenta nuevamente más tarde.');
     } finally {
       setLoadingCart(false);
+    }
+  };
+
+  const fetchOrderDetails = async (orderId) => {
+    const token = localStorage.getItem('token');
+    try {
+      console.log(`Fetching details for order ID: ${orderId}`);
+      const response = await fetch(`http://localhost:3001/users/order/${orderId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Order details received:', data);
+        setOrderDetails(data); // Actualiza el estado con los detalles de la orden
+      } else {
+        console.error('Error al cargar los detalles de la orden:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error al cargar los detalles de la orden:', error);
     }
   };
 
   const addToCart = async (course) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      // Manejo de carrito local para usuarios no registrados
       const localCart = JSON.parse(localStorage.getItem('cart')) || [];
       if (localCart.some(item => item.id === course.id)) {
         alert('Este curso ya está en tu carrito.');
@@ -131,7 +156,7 @@ function App() {
       } else if (response.ok) {
         fetchCart(token);
       } else {
-        console.error("Error al añadir al carrito:", response.statusText);
+        console.error('Error al añadir al carrito:', response.statusText);
       }
     } catch (error) {
       console.error('Error al añadir al carrito:', error);
@@ -141,7 +166,6 @@ function App() {
   const removeFromCart = async (courseId) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      // Manejo de carrito local para usuarios no registrados
       const updatedCart = cart.filter(course => course.id !== courseId);
       setCart(updatedCart);
       localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -183,11 +207,12 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <div className="app">
-        <Header currentPage={currentPage} setCurrentPage={setCurrentPage} cart={cart} isAuthenticated={!!localStorage.getItem('token')} logout={logout} />
+          <Header currentPage={currentPage} setCurrentPage={setCurrentPage} cart={cart} isAuthenticated={!!localStorage.getItem('token')} logout={logout} />
           <main>
             <Routes>
               <Route path="/purchase-failure" element={<PurchaseFailure />} />
               <Route path="/purchase-success" element={<PurchaseSuccess />} />
+              <Route path="/resetPassword" element={<ResetPassword setCurrentPage={setCurrentPage} />} />
               <Route path="/" element={
                 <>
                   {currentPage === 'home' && (

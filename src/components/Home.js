@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import CourseCard from './CourseCard';
 import { Typography, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel, Grid, Box, Button, Container, TextField } from '@mui/material';
 import '../styles/Home.css';
@@ -6,20 +6,43 @@ import ChatBot from './chat';
 
 const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, setFilter, filteredCourses, ownedCourses }) => {
   const [currentPage, setCurrentPageState] = useState(0);
-  const [searchTerm, setSearchTerm] = useState('');  
+  const [searchTerm, setSearchTerm] = useState('');
   const coursesPerPage = 9;
-  
-  const filteredBySearch = filteredCourses.filter(course => 
-    (course.name?.toLowerCase().includes(searchTerm.toLowerCase())) || 
-    (course.description?.toLowerCase().includes(searchTerm.toLowerCase()))
+
+  const filteredAndSortedCourses = useMemo(() => {
+    let result = filteredCourses;
+
+    // Busqueda
+    result = result.filter(course =>
+      course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.category?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Categoría
+    if (filter.category && filter.category !== 'all') {
+      result = result.filter(course => course.category === filter.category);
+    }
+
+    // Ordenar
+    if (filter.sort === 'price-asc') {
+      result.sort((a, b) => a.price - b.price);
+    } else if (filter.sort === 'price-desc') {
+      result.sort((a, b) => b.price - a.price);
+    } else if (filter.sort === 'alpha') {
+      result.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    return result;
+  }, [filteredCourses, filter, searchTerm]);
+
+
+  const displayedCourses = filteredAndSortedCourses.slice(
+    currentPage * coursesPerPage,
+    (currentPage + 1) * coursesPerPage
   );
-  const handleToggleShowOwned = () => {
-    setFilter(prev => ({ ...prev, showOwned: !prev.showOwned }));
-  };
-  const displayedCourses = filteredBySearch.slice(currentPage * coursesPerPage, (currentPage + 1) * coursesPerPage);
 
   const nextPage = () => {
-    if ((currentPage + 1) * coursesPerPage < filteredBySearch.length) {
+    if ((currentPage + 1) * coursesPerPage < filteredAndSortedCourses.length) {
       setCurrentPageState(prev => prev + 1);
     }
   };
@@ -30,22 +53,28 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
     }
   };
 
+  const handleToggleShowOwned = () => {
+    setFilter(prev => ({ ...prev, showOwned: !prev.showOwned }));
+  };
+
   return (
     <Container maxWidth="xl">
-      <Box sx={{
-        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/creativa.jpg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        color: 'white',
-        padding: '60px 0',
-        marginBottom: '40px',
-        borderRadius: '8px',
-        textAlign: 'center'
-      }}>
+      <Box
+        sx={{
+          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/creativa.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          color: 'white',
+          padding: '60px 0',
+          marginBottom: '40px',
+          borderRadius: '8px',
+          textAlign: 'center',
+        }}
+      >
         <Typography variant="h3" gutterBottom fontWeight="bold">
           Tu viaje educativo comienza aquí
         </Typography>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6">
           Descubre una amplia gama de cursos para impulsar tu carrera y creatividad
         </Typography>
       </Box>
@@ -85,7 +114,6 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
         </Box>
       </Box>
 
-      {/* Campo de búsqueda */}
       <Box sx={{ marginBottom: '24px' }}>
         <TextField
           label="Buscar curso"
@@ -110,9 +138,9 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
       <Grid container spacing={3} sx={{ marginTop: '24px' }}>
         {displayedCourses.map(course => (
           <Grid item xs={12} sm={6} md={4} key={course.id}>
-            <CourseCard 
-              course={course} 
-              addToCart={addToCart} 
+            <CourseCard
+              course={course}
+              addToCart={addToCart}
               setSelectedCourse={setSelectedCourse}
               setCurrentPage={setCurrentPage}
               ownedCourses={ownedCourses}
@@ -121,18 +149,18 @@ const Home = ({ courses, addToCart, setSelectedCourse, setCurrentPage, filter, s
         ))}
       </Grid>
 
-      <Box sx={{ marginTop: '40px', marginBottom: '40px',display: 'flex', justifyContent: 'center' }}>
-        <Button 
-          onClick={prevPage} 
-          disabled={currentPage === 0} 
-          variant="outlined" 
+      <Box sx={{ marginTop: '40px', marginBottom: '40px', display: 'flex', justifyContent: 'center' }}>
+        <Button
+          onClick={prevPage}
+          disabled={currentPage === 0}
+          variant="outlined"
           sx={{ marginRight: '8px' }}
         >
           Anterior
         </Button>
-        <Button 
-          onClick={nextPage} 
-          disabled={(currentPage + 1) * coursesPerPage >= filteredBySearch.length} 
+        <Button
+          onClick={nextPage}
+          disabled={(currentPage + 1) * coursesPerPage >= filteredAndSortedCourses.length}
           variant="contained"
         >
           Siguiente

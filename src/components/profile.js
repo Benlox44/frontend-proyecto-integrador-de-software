@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, CircularProgress, Box, Tab, Tabs } from '@mui/material';
+import { Card, CardContent, Typography, CircularProgress, Box, Tabs, Tab } from '@mui/material';
+import PurchaseList from './PurchaseList';
+import ErrorIcon from '@mui/icons-material/Error';
 
 const Profile = () => {
-  const [userData, setUserData] = useState({
-    name: '',
-    email: '',
-  });
+  const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedTab, setSelectedTab] = useState(0); 
-  const [courses, setCourses] = useState([]);
+  const [selectedTab, setSelectedTab] = useState(0);
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
-    const userProfile = async () => {
+    const fetchData = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
         setError('No se pudo autenticar al usuario. Por favor, inicia sesión nuevamente.');
@@ -22,154 +20,143 @@ const Profile = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:3001/users/profile', {
+        const profileResponse = await fetch('http://localhost:3001/users/profile', {
           method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setUserData({
-            name: data.name,
-            email: data.email,
-          });
+        if (profileResponse.ok) {
+          const profileData = await profileResponse.json();
+          setUserData(profileData);
         } else {
-          setError('Error al cargar el perfil del usuario. Intenta nuevamente más tarde.');
+          throw new Error('Error al cargar el perfil.');
         }
-      } catch (error) {
-        setError('Error al cargar el perfil del usuario. Intenta nuevamente más tarde.');
+
+        const purchasesResponse = await fetch('http://localhost:3001/users/purchases', {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (purchasesResponse.ok) {
+          const purchasesData = await purchasesResponse.json();
+          setPurchases(purchasesData);
+        } else {
+          throw new Error('Error al cargar las compras.');
+        }
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    // Simulación de datos para "Mis Cursos" y "Mis Compras"
-    const fetchCourses = async () => {
-      const token = localStorage.getItem('token');
-      try {
-        const response = await fetch('http://localhost:3001/users/courses', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        if (response.ok) {
-          const coursesData = await response.json();
-          setCourses(coursesData);
-        }
-      } catch (error) {
-        console.error("Error al cargar los cursos", error);
-      }
-    };
-
-    const fetchPurchases = async () => {
-      const token = localStorage.getItem('token');
-      try {
-        const response = await fetch('http://localhost:3001/users/purchases', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        if (response.ok) {
-          const purchasesData = await response.json();
-          setPurchases(purchasesData);
-        }
-      } catch (error) {
-        console.error("Error al cargar las compras", error);
-      }
-    };
-
-    fetchCourses();
-    fetchPurchases();
-
-    userProfile();
+    fetchData();
   }, []);
 
-
-  const handleTabChange = (event, newValue) => {
-    setSelectedTab(newValue);
-  };
+  const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : '');
 
   if (loading) {
     return (
-      <Card sx={{ padding: '32px', marginBottom: '32px', boxShadow: 3, borderRadius: '8px', textAlign: 'center' }}>
-        <CardContent>
-          <CircularProgress color="primary" size={50} />
-          <Typography variant="h6" sx={{ marginTop: '16px', color: '#888' }}>Cargando perfil...</Typography>
-        </CardContent>
-      </Card>
+      <Box sx={{ textAlign: 'center', mt: 4, backgroundColor: 'rgba(0, 0, 0, 0.1)', padding: 2, borderRadius: 2 }}>
+        <CircularProgress />
+        <Typography sx={{ mt: 2 }}>Cargando tu perfil...</Typography>
+      </Box>
     );
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-      }}
-    >
-      <Card sx={{ padding: '32px', maxWidth: 600, boxShadow: 3, borderRadius: '12px', textAlign: 'center', backgroundColor: '#fff' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, p: 2 }}>
+      <Card sx={{ width: '100%', textAlign: 'center',maxWidth: 800, p: 3, boxShadow: 6, borderRadius: 3, backgroundColor: '#FAFAFA'}}>
         <CardContent>
-          <Typography variant="h4" sx={{ marginBottom: '24px', fontWeight: 'bold' }}>Perfil de Usuario</Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              mb: 3,
+              fontWeight: 'bold',
+              alignItems: 'center',
+              color: '#3498db',
+            }}
+          >
+            Perfil de Usuario
+          </Typography>
 
-          {error && <Typography color="error" sx={{ marginBottom: '16px' }}>{error}</Typography>}
-
-          <Typography variant="h6" sx={{ marginBottom: '8px' }}>Nombre: <strong>{userData.name}</strong></Typography>
-          <Typography variant="h6" sx={{ marginBottom: '24px' }}>Correo electrónico: <strong>{userData.email}</strong></Typography>
+          {error ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#FFCDD2', p: 2, borderRadius: 2, mb: 2 }}>
+              <ErrorIcon sx={{ color: '#D32F2F', mr: 2 }} />
+              <Typography sx={{ color: '#D32F2F' }}>{error}</Typography>
+            </Box>
+          ) : (
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: 120,
+                  height: 120,
+                  borderRadius: '50%',
+                  backgroundColor: '#3498db',
+                  color: 'white',
+                  fontSize: '4rem',
+                  fontWeight: 'bold',
+                  fontFamily: 'Arial, sans-serif', 
+                  marginBottom: 2,
+                  margin: '0 auto 16px',
+                }}
+              >
+                {getInitial(userData.name)}
+              </Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 'bold',
+                  color: '#3498db',
+                  fontFamily: 'Courier New, monospace', 
+                }}
+              >
+                Nombre:
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: '1.2rem',
+                }}
+              >
+                <strong>{userData.name}</strong>
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 'bold',
+                  color: '#3498db',
+                  fontFamily: 'Courier New, monospace', 
+                }}
+              >
+                Email:
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: '1.2rem',
+                }}
+              >
+                <strong>{userData.email}</strong>
+              </Typography>
+            </>
+          )}
 
           <Tabs
             value={selectedTab}
-            onChange={handleTabChange}
-            aria-label="tabs"
+            onChange={(_, newValue) => setSelectedTab(newValue)}
+            sx={{ mt: 3 }}
+            indicatorColor="primary"
+            textColor="primary"
             centered
-            sx={{ marginBottom: '16px' }}
           >
-            <Tab label="Mis Cursos" />
             <Tab label="Mis Compras" />
           </Tabs>
 
-          {selectedTab === 0 && (
-            <Box sx={{ marginBottom: '16px' }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Cursos:</Typography>
-              {courses.length === 0 ? (
-                <Typography>No tienes cursos disponibles.</Typography>
-              ) : (
-                <ul>
-                  {courses.map((course, index) => (
-                    <li key={index}>
-                      <Typography>{course.title}</Typography>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Box>
-          )}
-
-          {selectedTab === 1 && (
-            <Box sx={{ marginBottom: '16px' }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Compras:</Typography>
-              {purchases.length === 0 ? (
-                <Typography>No tienes compras disponibles.</Typography>
-              ) : (
-                <ul>
-                  {purchases.map((purchase, index) => (
-                    <li key={index}>
-                      <Typography>{purchase.title} - {purchase.date}</Typography>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Box>
-          )}
-
+          {selectedTab === 0 && <PurchaseList purchases={purchases} />}
         </CardContent>
       </Card>
     </Box>

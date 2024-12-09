@@ -14,6 +14,15 @@ const Register = ({ setCurrentPage }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
+    const invalidExtensions = ['comm', 'con', 'cm', 'cmo','cll'];
+    const domainExtension = email.split('.').pop().toLowerCase();
+  
+    return emailRegex.test(email) && !invalidExtensions.includes(domainExtension);
+  }
+
   const register = async (name, email, password) => {
     try {
       const response = await fetch('http://localhost:3001/users/register', {
@@ -40,6 +49,16 @@ const Register = ({ setCurrentPage }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { name, email, password, confirmPassword } = formData;
+
+    if (!validateEmail(email)) {
+      setError('Correo electrónico no válido');
+      return;
+    }
+    if (password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+    
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
