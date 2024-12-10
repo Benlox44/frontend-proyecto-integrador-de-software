@@ -104,13 +104,13 @@ const UpdateProfile = () => {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+    if (formData.password && formData.password.length < 6) {
+      setError('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
-    
+  
     if (formData.password && formData.password !== formData.confirmPassword) {
-      setError('Las contraseñas no coinciden');
+      setError('Las contraseñas no coinciden.');
       return;
     }
     updateProfile();
