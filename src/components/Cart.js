@@ -1,13 +1,32 @@
 import React from 'react';
 import { Card, CardContent, Typography, Button, CircularProgress, Box } from '@mui/material';
 
-const Cart = ({ cart, removeFromCart, loadingCart }) => {
+const Cart = ({ cart, removeFromCart, loadingCart, setCurrentPage }) => {
   if (loadingCart) {
     return <CircularProgress />;
   }
 
   if (!cart || cart.length === 0) {
-    return <Typography variant="h6" color="textSecondary">El carrito está vacío</Typography>;
+    return (
+      <Box sx={{ margin: '40px', textAlign: 'center' }}>
+        <Typography variant="h4" gutterBottom>Tu carrito está vacío</Typography>
+        <img
+          src="/carrito-vacio.png"
+          alt="Carrito vacío"
+          style={{ maxWidth: '300px', marginBottom: '20px' }}
+        />
+        <Typography variant="h6" color="textSecondary" gutterBottom>
+          Parece que aún no has agregado nada a tu carrito.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setCurrentPage('home')}
+        >
+          Ver cursos
+        </Button>
+      </Box>
+    )
   }
 
   const handleCheckout = async () => {

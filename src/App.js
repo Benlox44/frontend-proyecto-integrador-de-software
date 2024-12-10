@@ -232,6 +232,7 @@ function App() {
                       cart={cart}
                       removeFromCart={removeFromCart}
                       loadingCart={loadingCart}
+                      setCurrentPage={setCurrentPage}
                     />
                   )}
                   {currentPage === 'login' && (
